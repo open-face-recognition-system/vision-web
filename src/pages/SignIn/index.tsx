@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Button,
   CssBaseline,
@@ -6,11 +6,37 @@ import {
   Typography,
   Container,
 } from '@material-ui/core';
-
+import { useHistory } from 'react-router-dom';
 import { useStyles } from './styles';
+
+import { useAuth } from '../../hooks/auth';
 
 const SignIn: React.FC = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const { signIn } = useAuth();
+
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+
+  const handleSubmit = useCallback(
+    async e => {
+      e.preventDefault();
+      try {
+        await signIn({
+          email,
+          password,
+        });
+
+        history.push('/dashboard');
+      } catch (err) {
+        console.log(err);
+        setEmail('');
+        setPassword('');
+      }
+    },
+    [signIn, history, email, password],
+  );
 
   return (
     <Container component="main" maxWidth="xs">
@@ -29,6 +55,8 @@ const SignIn: React.FC = () => {
             label="E-mail"
             name="email"
             autoComplete="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
             autoFocus
           />
           <TextField
@@ -40,14 +68,16 @@ const SignIn: React.FC = () => {
             label="Senha"
             type="password"
             id="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           <Button
-            type="submit"
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
+            onClick={handleSubmit}
+            className={classes.button}
           >
             Entrar
           </Button>

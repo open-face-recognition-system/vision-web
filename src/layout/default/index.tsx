@@ -16,7 +16,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
-import { mainListItems, secondaryListItems } from './listitems';
+import { MainListItems, SecondaryListItems } from './listitems';
 
 import { useStyles } from './styles';
 
@@ -75,16 +75,16 @@ const DefaultLayout: React.FC = ({ children }) => {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <List>
+          <MainListItems />
+        </List>
         <Divider />
-        <List>{secondaryListItems}</List>
+        <List>{SecondaryListItems}</List>
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {children}
-          </Grid>
+          <Grid container>{children}</Grid>
         </Container>
       </main>
     </div>

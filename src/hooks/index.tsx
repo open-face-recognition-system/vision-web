@@ -1,9 +1,12 @@
 import React from 'react';
 
 import { AuthProvider } from './auth';
+import { StudentProvider } from './student';
 
 const AppProvider: React.FC = ({ children }) => (
-  <AuthProvider>{children}</AuthProvider>
+  <AuthProvider>
+    <StudentProvider>{children}</StudentProvider>
+  </AuthProvider>
 );
 
 export default AppProvider;

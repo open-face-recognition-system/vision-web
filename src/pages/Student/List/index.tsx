@@ -68,12 +68,26 @@ const CustomPaginationActionsTable: React.FC = () => {
         <Table className={classes.table} aria-label="custom pagination table">
           <TableBody>
             {students.map(row => (
-              <TableRow key={row.user.name}>
+              <TableRow key={row.user.id}>
+                <TableCell component="th" scope="row">
+                  {row.user.name}
+                </TableCell>
                 <TableCell component="th" scope="row">
                   {row.user.email}
                 </TableCell>
-                <TableCell style={{ width: 160 }} align="right">
+                <TableCell align="left">
                   {row.enrollment}
+                </TableCell>
+                <TableCell align="right">
+                  <Button
+                    color="primary"
+                    onClick={
+                      () => {
+                        history.push(`/create-student/${row.id}`)
+                      }
+                    }
+                  >detalhes
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -81,15 +95,11 @@ const CustomPaginationActionsTable: React.FC = () => {
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                rowsPerPageOptions={[5, 10, 25]}
                 colSpan={3}
                 count={students.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
-                SelectProps={{
-                  inputProps: { 'aria-label': 'rows per page' },
-                  native: true,
-                }}
                 onChangePage={handleChangePage}
                 onChangeRowsPerPage={handleChangeRowsPerPage}
               />

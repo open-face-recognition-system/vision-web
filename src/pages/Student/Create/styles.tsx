@@ -1,6 +1,14 @@
 import { makeStyles } from '@material-ui/core/styles';
 
 export const useStyles = makeStyles(theme => ({
+  root: {
+    width: '100%',
+    marginTop: 16,
+  },
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
   layout: {
     width: 'auto',
     marginLeft: theme.spacing(2),

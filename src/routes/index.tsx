@@ -13,7 +13,13 @@ const Routes: React.FC = () => (
     <Route path="/" exact component={SignIn} />
     <Route path="/dashboard" component={Dashboard} isPrivate />
     <Route path="/students" component={StudentList} isPrivate />
-    <Route path="/create-student" component={StudentCreate} isPrivate />
+    <Route path="/create-student" exact component={StudentCreate} isPrivate />
+    <Route
+      path="/create-student/:id"
+      exact
+      component={StudentCreate}
+      isPrivate
+    />
   </Switch>
 );
 

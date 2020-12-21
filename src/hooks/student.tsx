@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useState, useContext } from 'react';
 import api from '../services/api';
 
 export interface Student {
+  id: number;
   enrollment: string;
   user: User;
   photos: Photo[];
@@ -30,11 +31,11 @@ export interface Photo {
 }
 
 interface StudentState {
-  students: Student[];
+  loading: boolean;
 }
 
 interface StudentContextData {
-  students: Student[];
+  loading: boolean;
   listStudents(): Promise<Student[]>;
   showStudent(id: number): Promise<Student>;
   createStudent(student: StudentRequest): Promise<Student>;
@@ -50,24 +51,27 @@ const StudentProvider: React.FC = ({ children }) => {
   });
 
   const listStudents = useCallback(async () => {
+    setData({ loading: true });
     const response = await api.get<Student[]>('/students');
 
     const students = response.data;
 
-    setData({ students });
+    setData({ loading: false });
     return students;
   }, [setData]);
 
   const showStudent = useCallback(async (id: number) => {
+    setData({ loading: true });
     const response = await api.get<Student>(`/students/${id}`);
 
     const student = response.data;
-
+    setData({ loading: false });
     return student;
   }, []);
 
   const createStudent = useCallback(async (student: StudentRequest) => {
     const { user } = student;
+    setData({ loading: true });
     const userResponse = await api.post<User>('/users', {
       name: user.name,
       email: user.email,
@@ -79,14 +83,14 @@ const StudentProvider: React.FC = ({ children }) => {
       enrollment: student.enrollment,
       userId: id,
     });
-
+    setData({ loading: false });
     return response.data;
   }, []);
 
   return (
     <StudentContext.Provider
       value={{
-        students: data.students,
+        loading: data.loading,
         listStudents,
         showStudent,
         createStudent,

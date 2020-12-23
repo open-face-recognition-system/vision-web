@@ -27,7 +27,7 @@ interface AuthContextData {
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
 const AuthProvider: React.FC = ({ children }) => {
-  const [data, setDate] = useState<AuthState>(() => {
+  const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@ofrs:token');
     const user = localStorage.getItem('@ofrs:user');
 
@@ -44,38 +44,41 @@ const AuthProvider: React.FC = ({ children }) => {
       email,
       password,
     });
-
     const { token, user } = response.data;
 
     localStorage.setItem('@ofrs:token', token);
     localStorage.setItem('@ofrs:user', JSON.stringify(user));
 
     api.defaults.headers.authorization = `Bearer ${token}`;
-
-    setDate({ token, user });
+    setData({ token, user });
   }, []);
 
   const signOut = useCallback(() => {
     localStorage.removeItem('@ofrs:token');
     localStorage.removeItem('@ofrs:user');
 
-    setDate({} as AuthState);
+    setData({} as AuthState);
   }, []);
 
   const updateUser = useCallback(
     (user: User) => {
       localStorage.setItem('@ofrs:user', JSON.stringify(user));
-      setDate({
+      setData({
         token: data.token,
         user,
       });
     },
-    [setDate, data.token],
+    [setData, data.token],
   );
 
   return (
     <AuthContext.Provider
-      value={{ user: data.user, signIn, signOut, updateUser }}
+      value={{
+        user: data.user,
+        signIn,
+        signOut,
+        updateUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

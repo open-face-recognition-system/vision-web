@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/jsx-indent */
 import React, { useCallback } from 'react';
 import {
   Button,
@@ -5,36 +7,49 @@ import {
   TextField,
   Typography,
   Container,
+  CircularProgress,
 } from '@material-ui/core';
+
 import { useHistory } from 'react-router-dom';
 import { useStyles } from './styles';
 
 import { useAuth } from '../../hooks/auth';
+import { useSnack } from '../../hooks/snackbar';
 
 const SignIn: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { openSnack } = useSnack();
   const { signIn } = useAuth();
 
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
   const handleSubmit = useCallback(
     async e => {
       e.preventDefault();
       try {
+        setLoading(true)
         await signIn({
           email,
           password,
         });
+        setLoading(false)
 
         history.push('/dashboard');
       } catch (err) {
         setEmail('');
         setPassword('');
+        setLoading(false)
+        openSnack({
+          type: 'error',
+          title: 'Erro na autenticação',
+          open: true,
+        });
       }
     },
-    [signIn, history, email, password],
+    [signIn, history, email, password, openSnack],
   );
 
   return (
@@ -71,15 +86,29 @@ const SignIn: React.FC = () => {
             onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            className={classes.button}
-          >
-            Entrar
-          </Button>
+          {loading ? (
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              onClick={handleSubmit}
+              className={classes.button}
+              disabled={loading}
+            >
+              <CircularProgress size={14} />
+            </Button>
+
+          ) : (
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                className={classes.button}
+              >
+                Entrar
+              </Button>
+            )}
         </form>
       </div>
     </Container>

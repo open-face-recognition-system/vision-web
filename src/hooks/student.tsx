@@ -34,9 +34,25 @@ interface StudentState {
   loading: boolean;
 }
 
+interface Pagination {
+  page: number;
+  per_page: number;
+}
+
+interface PaginationAwareObject {
+  from: any;
+  to: any;
+  per_page: any;
+  total: number | any;
+  current_page: number;
+  prev_page?: number | null;
+  next_page?: number | null;
+  data: Student[];
+}
+
 interface StudentContextData {
   loading: boolean;
-  listStudents(): Promise<Student[]>;
+  listStudents(pagination: Pagination): Promise<PaginationAwareObject>;
   showStudent(id: number): Promise<Student>;
   createStudent(student: StudentRequest): Promise<Student>;
 }
@@ -50,15 +66,24 @@ const StudentProvider: React.FC = ({ children }) => {
     return {} as StudentState;
   });
 
-  const listStudents = useCallback(async () => {
-    setData({ loading: true });
-    const response = await api.get<Student[]>('/students');
+  const listStudents = useCallback(
+    async (pagination: Pagination) => {
+      setData({ loading: true });
+      const { page, per_page } = pagination;
+      const response = await api.get<PaginationAwareObject>('/students', {
+        params: {
+          page,
+          per_page,
+        },
+      });
 
-    const students = response.data;
+      const students = response.data;
 
-    setData({ loading: false });
-    return students;
-  }, [setData]);
+      setData({ loading: false });
+      return students;
+    },
+    [setData],
+  );
 
   const showStudent = useCallback(async (id: number) => {
     setData({ loading: true });

@@ -124,7 +124,7 @@ const CreateStudent: React.FC = () => {
                 color="primary"
                 onClick={handleStudentAction}
               >
-                Criar
+                {id ? "Alterar" : "Criar"}
               </Button>
             </Grid>
           </Grid>

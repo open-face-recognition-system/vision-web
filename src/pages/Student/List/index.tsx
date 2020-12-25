@@ -15,7 +15,9 @@ import {
   Paper,
   Button,
   CircularProgress,
-  Backdrop
+  Backdrop,
+  Grid,
+  TableHead
 } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
@@ -69,16 +71,24 @@ const CustomPaginationActionsTable: React.FC = () => {
 
   return (
     <>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => {
-          history.push('/create-student');
-        }}
-        endIcon={<AddIcon />}
+      <Grid
+        container
+        direction="row"
+        justify="flex-end"
+        alignItems="center"
+        className={classes.gridContainer}
       >
-        Adicionar novo
-      </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            history.push('/create-student');
+          }}
+          endIcon={<AddIcon />}
+        >
+          Novo
+        </Button>
+      </Grid>
       <TableContainer component={Paper}>
         {loading ? (
           <Backdrop className={classes.backdrop} open={loading}>
@@ -86,6 +96,13 @@ const CustomPaginationActionsTable: React.FC = () => {
           </Backdrop>
         ) : (
             <Table className={classes.table} aria-label="custom pagination table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">Nome</TableCell>
+                  <TableCell align="left">E-mail</TableCell>
+                  <TableCell align="left">Matrícula</TableCell>
+                </TableRow>
+              </TableHead>
               <TableBody>
                 {students.map(row => (
                   <TableRow key={row.user.id}>
@@ -96,7 +113,7 @@ const CustomPaginationActionsTable: React.FC = () => {
                       {row.user.email}
                     </TableCell>
                     <TableCell align="left">{row.enrollment}</TableCell>
-                    <TableCell align="right">
+                    <TableCell align="left">
                       <Button
                         color="primary"
                         onClick={() => {

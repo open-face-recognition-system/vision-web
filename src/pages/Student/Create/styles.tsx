@@ -9,6 +9,13 @@ export const useStyles = makeStyles(theme => ({
     width: theme.spacing(7),
     height: theme.spacing(7),
   },
+  createButton: {
+    marginRight: 8,
+  },
+  backdrop: {
+    zIndex: 1200 + 1,
+    color: '#fff',
+  },
   layout: {
     width: 'auto',
     marginLeft: theme.spacing(2),

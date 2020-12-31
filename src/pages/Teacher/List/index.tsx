@@ -23,37 +23,37 @@ import {
 import { useHistory } from 'react-router-dom';
 
 import { useStyles } from './styles';
-import { Student, useStudent } from '../../../hooks/student';
+import { Teacher, useTeacher } from '../../../hooks/teacher';
 
 const CustomPaginationActionsTable: React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
 
-  const { listStudents } = useStudent();
+  const { listTeachers } = useTeacher();
 
   const [currentPage, setCurrentPage] = React.useState(0);
   const [perPage, setPerPage] = React.useState(15);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
 
-  const [students, setStudents] = React.useState<Student[]>([]);
+  const [teachers, setTeachers] = React.useState<Teacher[]>([]);
 
   useEffect(() => {
-    async function getAllStudents(): Promise<void> {
+    async function getAllTeachers(): Promise<void> {
       setLoading(true)
-      const studentsResponse = await listStudents({
+      const teachersResponse = await listTeachers({
         page: currentPage + 1,
         per_page: perPage,
       });
-      setStudents(studentsResponse.data);
-      setCurrentPage(studentsResponse.current_page - 1);
-      setPerPage(studentsResponse.per_page);
-      setTotal(studentsResponse.total);
+      setTeachers(teachersResponse.data);
+      setCurrentPage(teachersResponse.current_page - 1);
+      setPerPage(teachersResponse.per_page);
+      setTotal(teachersResponse.total);
       setLoading(false)
     }
 
-    getAllStudents();
-  }, [listStudents, currentPage, perPage]);
+    getAllTeachers();
+  }, [listTeachers, currentPage, perPage]);
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -82,7 +82,7 @@ const CustomPaginationActionsTable: React.FC = () => {
           variant="contained"
           color="primary"
           onClick={() => {
-            history.push('/create-student');
+            history.push('/create-teacher');
           }}
           endIcon={<AddIcon />}
         >
@@ -105,7 +105,7 @@ const CustomPaginationActionsTable: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {students.map(row => (
+                {teachers.map(row => (
                   <TableRow key={row.user.id}>
                     <TableCell component="th" scope="row">
                       {row.user.name}
@@ -118,7 +118,7 @@ const CustomPaginationActionsTable: React.FC = () => {
                       <Button
                         color="primary"
                         onClick={() => {
-                          history.push(`/create-student/${row.id}`);
+                          history.push(`/create-teacher/${row.id}`);
                         }}
                       >
                         detalhes

@@ -20,11 +20,23 @@ export const MainListItems: React.FC = () => {
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItem>
+      <ListItem button onClick={() => history.push('/teachers')}>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Professores" />
+      </ListItem>
       <ListItem button onClick={() => history.push('/students')}>
         <ListItemIcon>
           <PeopleIcon />
         </ListItemIcon>
         <ListItemText primary="Alunos" />
+      </ListItem>
+      <ListItem button onClick={() => history.push('/subjects')}>
+        <ListItemIcon>
+          <PeopleIcon />
+        </ListItemIcon>
+        <ListItemText primary="Matérias" />
       </ListItem>
     </div>
   );

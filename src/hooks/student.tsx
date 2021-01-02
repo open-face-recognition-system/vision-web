@@ -52,7 +52,10 @@ interface PaginationAwareObject {
 
 interface StudentContextData {
   loading: boolean;
-  listStudents(pagination: Pagination): Promise<PaginationAwareObject>;
+  listStudents(
+    pagination: Pagination,
+    query?: any,
+  ): Promise<PaginationAwareObject>;
   showStudent(id: number): Promise<Student>;
   createStudent(student: StudentRequest): Promise<Student>;
 }
@@ -67,13 +70,14 @@ const StudentProvider: React.FC = ({ children }) => {
   });
 
   const listStudents = useCallback(
-    async (pagination: Pagination) => {
+    async (pagination: Pagination, query?: any) => {
       setData({ loading: true });
       const { page, per_page } = pagination;
       const response = await api.get<PaginationAwareObject>('/students', {
         params: {
           page,
           per_page,
+          ...query,
         },
       });
 

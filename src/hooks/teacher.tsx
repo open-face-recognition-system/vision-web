@@ -51,7 +51,10 @@ interface PaginationAwareObject {
 
 interface TeacherContextData {
   loading: boolean;
-  listTeachers(pagination: Pagination): Promise<PaginationAwareObject>;
+  listTeachers(
+    pagination: Pagination,
+    query?: any,
+  ): Promise<PaginationAwareObject>;
   showTeacher(id: number): Promise<Teacher>;
   createTeacher(teacher: TeacherRequest): Promise<Teacher>;
 }
@@ -66,13 +69,14 @@ const TeacherProvider: React.FC = ({ children }) => {
   });
 
   const listTeachers = useCallback(
-    async (pagination: Pagination) => {
+    async (pagination: Pagination, query?: any) => {
       setData({ loading: true });
       const { page, per_page } = pagination;
       const response = await api.get<PaginationAwareObject>('/teachers', {
         params: {
           page,
           per_page,
+          ...query,
         },
       });
 

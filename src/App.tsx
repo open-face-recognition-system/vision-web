@@ -5,12 +5,14 @@ import Routes from './routes';
 
 import AppProvider from './hooks';
 
-const App: React.FC = () => (
-  <Router>
-    <AppProvider>
-      <Routes />
-    </AppProvider>
-  </Router>
-);
+const App: React.FC = () => {
+  return (
+    <Router>
+      <AppProvider>
+        <Routes />
+      </AppProvider>
+    </Router>
+  );
+};
 
 export default App;

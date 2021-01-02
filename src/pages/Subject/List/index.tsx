@@ -17,7 +17,8 @@ import {
   CircularProgress,
   Backdrop,
   Grid,
-  TableHead
+  TableHead,
+  Chip,
 } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
@@ -40,7 +41,7 @@ const CustomPaginationActionsTable: React.FC = () => {
 
   useEffect(() => {
     async function getAllSubjects(): Promise<void> {
-      setLoading(true)
+      setLoading(true);
       const subjectsResponse = await listSubjects({
         page: currentPage + 1,
         per_page: perPage,
@@ -49,7 +50,7 @@ const CustomPaginationActionsTable: React.FC = () => {
       setCurrentPage(subjectsResponse.current_page - 1);
       setPerPage(subjectsResponse.per_page);
       setTotal(subjectsResponse.total);
-      setLoading(false)
+      setLoading(false);
     }
 
     getAllSubjects();
@@ -102,6 +103,7 @@ const CustomPaginationActionsTable: React.FC = () => {
                   <TableCell align="left">Curso</TableCell>
                   <TableCell align="left">Professor</TableCell>
                   <TableCell align="left" />
+                  <TableCell align="left" />
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -114,6 +116,13 @@ const CustomPaginationActionsTable: React.FC = () => {
                       {row.course}
                     </TableCell>
                     <TableCell align="left">{row.teacher.user.name}</TableCell>
+                    <TableCell align="left">
+                      {row.recognitionFile ? (
+                        <Chip label="Treinado" />
+                      ) : (
+                          <Chip label="Não treinado" color="secondary" />
+                        )}
+                    </TableCell>
                     <TableCell align="left">
                       <Button
                         color="primary"
@@ -142,7 +151,6 @@ const CustomPaginationActionsTable: React.FC = () => {
               </TableFooter>
             </Table>
           )}
-
       </TableContainer>
     </>
   );

@@ -7,6 +7,7 @@ export interface Subject {
   course: string;
   description: string;
   teacher: Teacher;
+  recognitionFile: string | null;
 }
 
 export interface Teacher {

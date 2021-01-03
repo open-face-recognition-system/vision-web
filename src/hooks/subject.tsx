@@ -48,6 +48,7 @@ interface SubjectContextData {
   listSubjects(pagination: Pagination): Promise<PaginationAwareObject>;
   showSubject(id: number): Promise<Subject>;
   createSubject(subject: SubjectRequest): Promise<Subject>;
+  updateSubject(id: number, subject: SubjectRequest): Promise<Subject>;
 }
 
 const SubjectContext = createContext<SubjectContextData>(
@@ -89,12 +90,29 @@ const SubjectProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const updateSubject = useCallback(
+    async (
+      id: number,
+      { name, description, course, teacherId }: SubjectRequest,
+    ) => {
+      const response = await api.put<Subject>(`/subjects/${id}`, {
+        name,
+        description,
+        course,
+        teacherId,
+      });
+      return response.data;
+    },
+    [],
+  );
+
   return (
     <SubjectContext.Provider
       value={{
         listSubjects,
         showSubject,
         createSubject,
+        updateSubject,
       }}
     >
       {children}

@@ -9,8 +9,9 @@ import StudentList from '../pages/Student/List';
 import StudentCreate from '../pages/Student/Create';
 import TeacherList from '../pages/Teacher/List';
 import TeacherCreate from '../pages/Teacher/Create';
-import SubjectList from '../pages/Subject/List';
-import SubjectCreate from '../pages/Subject/Create';
+import ListSubjects from '../pages/Subject/List';
+import CreateSubject from '../pages/Subject/Create';
+import UpdateSubject from '../pages/Subject/Update';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -35,12 +36,12 @@ const Routes: React.FC = () => (
       isPrivate
     />
 
-    <Route path="/subjects" component={SubjectList} isPrivate />
-    <Route path="/create-subject" exact component={SubjectCreate} isPrivate />
+    <Route path="/subjects" exact component={ListSubjects} isPrivate />
+    <Route path="/subjects/create" exact component={CreateSubject} isPrivate />
     <Route
-      path="/create-subject/:id"
+      path="/subjects/:id/update"
       exact
-      component={SubjectCreate}
+      component={UpdateSubject}
       isPrivate
     />
   </Switch>

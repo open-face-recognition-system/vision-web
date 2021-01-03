@@ -83,7 +83,7 @@ const CustomPaginationActionsTable: React.FC = () => {
           variant="contained"
           color="primary"
           onClick={() => {
-            history.push('/create-subject');
+            history.push('/subjects/create');
           }}
           endIcon={<AddIcon />}
         >
@@ -127,7 +127,7 @@ const CustomPaginationActionsTable: React.FC = () => {
                       <Button
                         color="primary"
                         onClick={() => {
-                          history.push(`/create-subject/${row.id}`);
+                          history.push(`/subjects/${row.id}/update`);
                         }}
                       >
                         detalhes

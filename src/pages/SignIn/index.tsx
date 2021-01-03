@@ -4,7 +4,7 @@ import React, { useCallback } from 'react';
 import {
   Button,
   CssBaseline,
-  TextField,
+  TextField as MaterialTextField,
   Typography,
   Container,
   CircularProgress,
@@ -15,6 +15,8 @@ import { useStyles } from './styles';
 
 import { useAuth } from '../../hooks/auth';
 import { useSnack } from '../../hooks/snackbar';
+
+import TextField from '../../components/TextField'
 
 const SignIn: React.FC = () => {
   const classes = useStyles();
@@ -61,22 +63,15 @@ const SignIn: React.FC = () => {
         </Typography>
         <form className={classes.form} noValidate>
           <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
             label="E-mail"
             name="email"
-            autoComplete="email"
             value={email}
-            onChange={e => setEmail(e.target.value)}
-            autoFocus
+            disabled={false}
+            setValue={setEmail}
           />
-          <TextField
+          <MaterialTextField
             variant="outlined"
             margin="normal"
-            required
             fullWidth
             name="password"
             label="Senha"

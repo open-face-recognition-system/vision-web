@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-indent */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -32,12 +32,12 @@ const CustomPaginationActionsTable: React.FC = () => {
 
   const { listSubjects } = useSubject();
 
-  const [currentPage, setCurrentPage] = React.useState(0);
-  const [perPage, setPerPage] = React.useState(15);
-  const [total, setTotal] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [perPage, setPerPage] = useState(15);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const [subjects, setSubjects] = React.useState<Subject[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
     async function getAllSubjects(): Promise<void> {

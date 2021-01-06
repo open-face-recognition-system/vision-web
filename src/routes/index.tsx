@@ -12,11 +12,14 @@ import TeacherCreate from '../pages/Teacher/Create';
 import ListSubjects from '../pages/Subject/List';
 import CreateSubject from '../pages/Subject/Create';
 import UpdateSubject from '../pages/Subject/Update';
+import ListSemesters from '../pages/Semester/List';
 
 const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={SignIn} />
     <Route path="/dashboard" component={Dashboard} isPrivate />
+
+    <Route path="/semesters" exact component={ListSemesters} isPrivate />
 
     <Route path="/students" component={StudentList} isPrivate />
     <Route path="/create-student" exact component={StudentCreate} isPrivate />

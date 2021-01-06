@@ -1,11 +1,14 @@
 import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import DashboardIcon from '@material-ui/icons/Dashboard';
-import PeopleIcon from '@material-ui/icons/People';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+import { ListItemIcon, ListItemText, ListSubheader } from '@material-ui/core';
+import {
+  Dashboard,
+  People,
+  School,
+  Assignment,
+  Subject,
+  CalendarToday,
+} from '@material-ui/icons';
 
 import { useHistory } from 'react-router-dom';
 
@@ -16,25 +19,31 @@ export const MainListItems: React.FC = () => {
     <div>
       <ListItem button onClick={() => history.push('/dashboard')}>
         <ListItemIcon>
-          <DashboardIcon />
+          <Dashboard />
         </ListItemIcon>
         <ListItemText primary="Dashboard" />
       </ListItem>
+      <ListItem button onClick={() => history.push('/semesters')}>
+        <ListItemIcon>
+          <CalendarToday />
+        </ListItemIcon>
+        <ListItemText primary="Semestres" />
+      </ListItem>
       <ListItem button onClick={() => history.push('/teachers')}>
         <ListItemIcon>
-          <PeopleIcon />
+          <People />
         </ListItemIcon>
         <ListItemText primary="Professores" />
       </ListItem>
       <ListItem button onClick={() => history.push('/students')}>
         <ListItemIcon>
-          <PeopleIcon />
+          <School />
         </ListItemIcon>
         <ListItemText primary="Alunos" />
       </ListItem>
       <ListItem button onClick={() => history.push('/subjects')}>
         <ListItemIcon>
-          <PeopleIcon />
+          <Subject />
         </ListItemIcon>
         <ListItemText primary="Matérias" />
       </ListItem>
@@ -48,19 +57,19 @@ export const SecondaryListItems: React.FC = () => {
       <ListSubheader inset>Saved reports</ListSubheader>
       <ListItem button>
         <ListItemIcon>
-          <AssignmentIcon />
+          <Assignment />
         </ListItemIcon>
         <ListItemText primary="Current month" />
       </ListItem>
       <ListItem button>
         <ListItemIcon>
-          <AssignmentIcon />
+          <Assignment />
         </ListItemIcon>
         <ListItemText primary="Last quarter" />
       </ListItem>
       <ListItem button>
         <ListItemIcon>
-          <AssignmentIcon />
+          <Assignment />
         </ListItemIcon>
         <ListItemText primary="Year-end sale" />
       </ListItem>

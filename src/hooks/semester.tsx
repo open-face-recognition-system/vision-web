@@ -1,13 +1,9 @@
 import React, { createContext, useCallback, useContext } from 'react';
+import CreateSemesterRequest from '../dtos/CreateSemesterRequest';
 import api from '../services/api';
 
 export interface Semester {
   id: number;
-  startDate: Date;
-  endDate: Date;
-}
-
-export interface SemesterRequest {
   startDate: Date;
   endDate: Date;
 }
@@ -25,8 +21,11 @@ interface PaginationAwareObject {
 interface SemesterContextData {
   listSemesters(pagination: Pagination): Promise<PaginationAwareObject>;
   showSemester(id: number): Promise<Semester>;
-  createSemester(semester: SemesterRequest): Promise<Semester>;
-  updateSemester(id: number, semester: SemesterRequest): Promise<Semester>;
+  createSemester(semester: CreateSemesterRequest): Promise<Semester>;
+  updateSemester(
+    id: number,
+    semester: CreateSemesterRequest,
+  ): Promise<Semester>;
   deleteSemester(id: number): Promise<void>;
 }
 
@@ -57,7 +56,7 @@ const SemesterProvider: React.FC = ({ children }) => {
   }, []);
 
   const createSemester = useCallback(
-    async ({ startDate, endDate }: SemesterRequest) => {
+    async ({ startDate, endDate }: CreateSemesterRequest) => {
       const response = await api.post<Semester>('/semesters', {
         startDate,
         endDate,
@@ -68,7 +67,7 @@ const SemesterProvider: React.FC = ({ children }) => {
   );
 
   const updateSemester = useCallback(
-    async (id: number, { startDate, endDate }: SemesterRequest) => {
+    async (id: number, { startDate, endDate }: CreateSemesterRequest) => {
       const response = await api.put<Semester>(`/semesters/${id}`, {
         startDate,
         endDate,

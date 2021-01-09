@@ -13,6 +13,8 @@ import ListSubjects from '../pages/Subject/List';
 import CreateSubject from '../pages/Subject/Create';
 import UpdateSubject from '../pages/Subject/Update';
 import ListSemesters from '../pages/Semester/List';
+import CreateSemesters from '../pages/Semester/Create';
+import UpdateSemesters from '../pages/Semester/Update';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -20,6 +22,18 @@ const Routes: React.FC = () => (
     <Route path="/dashboard" component={Dashboard} isPrivate />
 
     <Route path="/semesters" exact component={ListSemesters} isPrivate />
+    <Route
+      path="/semesters/create"
+      exact
+      component={CreateSemesters}
+      isPrivate
+    />
+    <Route
+      path="/semesters/:id/update"
+      exact
+      component={UpdateSemesters}
+      isPrivate
+    />
 
     <Route path="/students" component={StudentList} isPrivate />
     <Route path="/create-student" exact component={StudentCreate} isPrivate />

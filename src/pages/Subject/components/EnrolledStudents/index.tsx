@@ -34,7 +34,7 @@ const EnrolledStudents: React.FC = () => {
         const studentsResponse = await listStudents(
           {
             page: 1,
-            per_page: 100,
+            limit: 100,
           },
           query,
         );

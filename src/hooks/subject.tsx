@@ -1,5 +1,6 @@
 import React, { createContext, useCallback, useContext } from 'react';
 import api from '../services/api';
+import { Student } from './student';
 
 export interface Subject {
   id: number;
@@ -8,6 +9,7 @@ export interface Subject {
   description: string;
   teacher: Teacher;
   recognitionFile: string | null;
+  students: Student[];
 }
 
 export interface Teacher {
@@ -30,17 +32,11 @@ export interface SubjectRequest {
 
 interface Pagination {
   page: number;
-  per_page: number;
+  limit: number;
 }
 
 interface PaginationAwareObject {
-  from: any;
-  to: any;
-  per_page: any;
   total: number | any;
-  current_page: number;
-  prev_page?: number | null;
-  next_page?: number | null;
   data: Subject[];
 }
 
@@ -57,11 +53,11 @@ const SubjectContext = createContext<SubjectContextData>(
 
 const SubjectProvider: React.FC = ({ children }) => {
   const listSubjects = useCallback(async (pagination: Pagination) => {
-    const { page, per_page } = pagination;
+    const { page, limit } = pagination;
     const response = await api.get<PaginationAwareObject>('/subjects', {
       params: {
         page,
-        per_page,
+        limit,
       },
     });
 

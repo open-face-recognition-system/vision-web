@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
-
+import { parseISO, format } from 'date-fns';
 import MaterialTable from 'material-table';
 
+import { useHistory } from 'react-router-dom';
 import { Semester, useSemester } from '../../../hooks/semester';
 
 const List: React.FC = () => {
+  const history = useHistory();
+
   const { listSemesters } = useSemester();
 
   const [loading, setLoading] = React.useState(true);
@@ -33,8 +36,24 @@ const List: React.FC = () => {
       <MaterialTable
         isLoading={loading}
         columns={[
-          { title: 'Início', field: 'startDate', type: 'date' },
-          { title: 'Fim', field: 'endDate' },
+          {
+            title: 'Início',
+            field: 'startDate',
+            render: semester => {
+              const firstDate = parseISO(String(semester.startDate));
+              const formattedDate = format(firstDate, 'dd/MM/yyyy');
+              return <p>{formattedDate}</p>;
+            },
+          },
+          {
+            title: 'Fim',
+            field: 'endDate',
+            render: semester => {
+              const endDate = parseISO(String(semester.endDate));
+              const formattedDate = format(endDate, 'dd/MM/yyyy');
+              return <p>{formattedDate}</p>;
+            },
+          },
         ]}
         data={semesters}
         totalCount={total}
@@ -44,12 +63,15 @@ const List: React.FC = () => {
             icon: 'add',
             tooltip: 'Adicionar Semestre',
             isFreeAction: true,
-            onClick: () => alert(`You saved`),
+            onClick: () => history.push(`/semesters/create`),
           },
           {
             icon: 'edit',
             tooltip: 'Editar Semestre',
-            onClick: () => alert(`You saved`),
+            onClick: (event, rowData) => {
+              const semester = rowData as Semester;
+              history.push(`/semesters/${semester.id}/update`);
+            },
           },
           () => ({
             icon: 'delete',

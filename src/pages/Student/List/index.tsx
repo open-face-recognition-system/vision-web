@@ -1,151 +1,80 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react/jsx-indent */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import AddIcon from '@material-ui/icons/Add';
+import MaterialTable from 'material-table';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableFooter,
-  TablePagination,
-  TableRow,
-  Paper,
-  Button,
-  CircularProgress,
-  Backdrop,
-  Grid,
-  TableHead
-} from '@material-ui/core';
-
-import { useHistory } from 'react-router-dom';
-
-import { useStyles } from './styles';
 import { Student, useStudent } from '../../../hooks/student';
 
-const CustomPaginationActionsTable: React.FC = () => {
-  const classes = useStyles();
-  const history = useHistory();
-
+const List: React.FC = () => {
   const { listStudents } = useStudent();
 
-  const [currentPage, setCurrentPage] = React.useState(0);
-  const [perPage, setPerPage] = React.useState(15);
-  const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-
+  const [total, setTotal] = useState(0);
+  const [limit, setLimit] = useState(5);
+  const [page, setPage] = useState(0);
   const [students, setStudents] = React.useState<Student[]>([]);
 
   useEffect(() => {
-    async function getAllStudents(): Promise<void> {
-      setLoading(true)
-      const studentsResponse = await listStudents({
-        page: currentPage + 1,
-        per_page: perPage,
+    async function getAllSubjects(): Promise<void> {
+      setLoading(true);
+      const subjectsResponse = await listStudents({
+        page: page + 1,
+        limit,
       });
-      setStudents(studentsResponse.data);
-      setCurrentPage(studentsResponse.current_page - 1);
-      setPerPage(studentsResponse.per_page);
-      setTotal(studentsResponse.total);
-      setLoading(false)
+      setStudents(subjectsResponse.data);
+      setTotal(subjectsResponse.total);
+      setLoading(false);
     }
 
-    getAllStudents();
-  }, [listStudents, currentPage, perPage]);
-
-  const handleChangePage = (
-    event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number,
-  ): void => {
-    setCurrentPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ): void => {
-    setPerPage(Number(event.target.value));
-    setCurrentPage(0);
-  };
+    getAllSubjects();
+  }, [listStudents, limit, page]);
 
   return (
-    <>
-      <Grid
-        container
-        direction="row"
-        justify="flex-end"
-        alignItems="center"
-        className={classes.gridContainer}
-      >
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            history.push('/create-student');
-          }}
-          endIcon={<AddIcon />}
-        >
-          Novo
-        </Button>
-      </Grid>
-      <TableContainer component={Paper}>
-        {loading ? (
-          <Backdrop className={classes.backdrop} open={loading}>
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        ) : (
-            <Table className={classes.table} aria-label="custom pagination table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left">Nome</TableCell>
-                  <TableCell align="left">E-mail</TableCell>
-                  <TableCell align="left">Matrícula</TableCell>
-                  <TableCell align="left" />
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {students.map(row => (
-                  <TableRow key={row.user.id}>
-                    <TableCell component="th" scope="row">
-                      {row.user.name}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.user.email}
-                    </TableCell>
-                    <TableCell align="left">{row.enrollment}</TableCell>
-                    <TableCell align="left">
-                      <Button
-                        color="primary"
-                        onClick={() => {
-                          history.push(`/create-student/${row.id}`);
-                        }}
-                      >
-                        detalhes
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-              <TableFooter>
-                <TableRow>
-                  <TablePagination
-                    rowsPerPageOptions={[5, 15, 25]}
-                    colSpan={3}
-                    count={total}
-                    rowsPerPage={perPage}
-                    page={currentPage}
-                    onChangePage={handleChangePage}
-                    onChangeRowsPerPage={handleChangeRowsPerPage}
-                  />
-                </TableRow>
-              </TableFooter>
-            </Table>
-          )}
-
-      </TableContainer>
-    </>
+    <div style={{ minWidth: '100%' }}>
+      <MaterialTable
+        isLoading={loading}
+        columns={[
+          { title: 'Nome', field: 'user.name' },
+          { title: 'E-mail', field: 'user.email' },
+          { title: 'Matrícula', field: 'enrollment' },
+        ]}
+        data={students}
+        totalCount={total}
+        page={page}
+        actions={[
+          {
+            icon: 'add',
+            tooltip: 'Adicionar Semestre',
+            isFreeAction: true,
+            onClick: () => alert(`You saved`),
+          },
+          {
+            icon: 'edit',
+            tooltip: 'Editar Semestre',
+            onClick: () => alert(`You saved`),
+          },
+          () => ({
+            icon: 'delete',
+            tooltip: 'Deletar Semestre',
+            onClick: () => alert(`You saved`),
+          }),
+        ]}
+        onRowClick={() => {
+          alert(`You saved`);
+        }}
+        onChangePage={newPage => {
+          setPage(newPage);
+        }}
+        onChangeRowsPerPage={newLimit => {
+          setLimit(newLimit);
+          setPage(0);
+        }}
+        options={{
+          actionsColumnIndex: -1,
+        }}
+        title="Alunos"
+      />
+    </div>
   );
 };
 
-export default CustomPaginationActionsTable;
+export default List;

@@ -57,7 +57,7 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
         const teachersResponse = await listTeachers(
           {
             page: 1,
-            per_page: 100,
+            limit: 100,
           },
           query,
         );

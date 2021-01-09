@@ -36,17 +36,11 @@ interface StudentState {
 
 interface Pagination {
   page: number;
-  per_page: number;
+  limit: number;
 }
 
 interface PaginationAwareObject {
-  from: any;
-  to: any;
-  per_page: any;
   total: number | any;
-  current_page: number;
-  prev_page?: number | null;
-  next_page?: number | null;
   data: Student[];
 }
 
@@ -72,11 +66,11 @@ const StudentProvider: React.FC = ({ children }) => {
   const listStudents = useCallback(
     async (pagination: Pagination, query?: any) => {
       setData({ loading: true });
-      const { page, per_page } = pagination;
+      const { page, limit } = pagination;
       const response = await api.get<PaginationAwareObject>('/students', {
         params: {
           page,
-          per_page,
+          limit,
           ...query,
         },
       });

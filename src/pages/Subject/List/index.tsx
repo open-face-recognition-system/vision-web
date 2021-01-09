@@ -37,7 +37,7 @@ const List: React.FC = () => {
         columns={[
           { title: 'Nome', field: 'name' },
           { title: 'Curso', field: 'course' },
-          { title: 'Professor', field: 'teacher.user.id' },
+          { title: 'Professor', field: 'teacher.user.name' },
         ]}
         data={subjects}
         totalCount={total}
@@ -47,7 +47,7 @@ const List: React.FC = () => {
             icon: 'add',
             tooltip: 'Adicionar Semestre',
             isFreeAction: true,
-            onClick: () => alert(`You saved`),
+            onClick: () => history.push(`/subjects/create`),
           },
           {
             icon: 'edit',

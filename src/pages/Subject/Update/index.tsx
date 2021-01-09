@@ -97,7 +97,10 @@ const UpdateSubject: React.FC = () => {
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <EnrolledStudents />
+              <EnrolledStudents
+                subjectId={subject.id}
+                enrolledStudents={subject.students}
+              />
             </Grid>
           </Grid>
         )}

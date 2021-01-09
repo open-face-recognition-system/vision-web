@@ -9,7 +9,12 @@ export interface Subject {
   description: string;
   teacher: Teacher;
   recognitionFile: string | null;
-  students: Student[];
+  students: StudentSubject[];
+}
+
+export interface StudentSubject {
+  isEnrolled: boolean;
+  student: Student;
 }
 
 export interface Teacher {
@@ -43,6 +48,8 @@ interface PaginationAwareObject {
 interface SubjectContextData {
   listSubjects(pagination: Pagination): Promise<PaginationAwareObject>;
   showSubject(id: number): Promise<Subject>;
+  enrollStudent(id: number, studnetId: number): Promise<Student>;
+  unenrollStudent(id: number, studnetId: number): Promise<void>;
   createSubject(subject: SubjectRequest): Promise<Subject>;
   updateSubject(id: number, subject: SubjectRequest): Promise<Subject>;
 }
@@ -68,7 +75,6 @@ const SubjectProvider: React.FC = ({ children }) => {
 
   const showSubject = useCallback(async (id: number) => {
     const response = await api.get<Subject>(`/subjects/${id}`);
-
     const subject = response.data;
     return subject;
   }, []);
@@ -102,6 +108,20 @@ const SubjectProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const enrollStudent = useCallback(async (id: number, studentId: number) => {
+    const response = await api.post<Student>(`/subjects/${id}/enroll`, {
+      studentId,
+    });
+    return response.data;
+  }, []);
+
+  const unenrollStudent = useCallback(async (id: number, studentId: number) => {
+    const response = await api.post(`/subjects/${id}/unenroll`, {
+      studentId,
+    });
+    return response.data;
+  }, []);
+
   return (
     <SubjectContext.Provider
       value={{
@@ -109,6 +129,8 @@ const SubjectProvider: React.FC = ({ children }) => {
         showSubject,
         createSubject,
         updateSubject,
+        enrollStudent,
+        unenrollStudent,
       }}
     >
       {children}

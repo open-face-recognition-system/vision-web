@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import clsx from 'clsx';
 import {
   CssBaseline,
@@ -11,10 +11,14 @@ import {
   IconButton,
   Container,
   Grid,
+  Menu,
+  MenuItem,
 } from '@material-ui/core';
-
+import { AccountCircle } from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+
+import { useAuth } from '../../hooks/auth';
 
 import { MainListItems, SecondaryListItems } from './listitems';
 
@@ -22,8 +26,37 @@ import { useStyles } from './styles';
 
 const DefaultLayout: React.FC = ({ children }) => {
   const classes = useStyles();
+  const { signOut, refreshToken } = useAuth();
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = React.useState(true);
+  const menuOpen = Boolean(anchorEl);
+
+  useEffect(() => {
+    async function refreshNewToken(): Promise<void> {
+      try {
+        await refreshToken();
+      } catch {
+        signOut();
+      }
+    }
+
+    refreshNewToken();
+  }, [refreshToken, signOut]);
+
+  const handleMenu = (e: React.MouseEvent<HTMLElement>): void => {
+    setAnchorEl(e.currentTarget);
+  };
+
+  const handleClose = (): void => {
+    setAnchorEl(null);
+  };
+
+  const handleSignOut = (): void => {
+    signOut();
+    setAnchorEl(null);
+  };
+
   const handleDrawerOpen = (): void => {
     setOpen(true);
   };
@@ -58,8 +91,37 @@ const DefaultLayout: React.FC = ({ children }) => {
             noWrap
             className={classes.title}
           >
-            Dashboard
+            OFRS - Open Face Recognition System
           </Typography>
+          <div>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              open={menuOpen}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>Perfil</MenuItem>
+              <MenuItem onClick={handleSignOut}>Sair</MenuItem>
+            </Menu>
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer

@@ -9,6 +9,7 @@ interface User {
 
 interface AuthState {
   token: string;
+  refreshToken: string;
   user: User;
 }
 
@@ -21,6 +22,7 @@ interface AuthContextData {
   user: User;
   signIn(credentials: SignInCredentials): Promise<void>;
   signOut(): void;
+  refreshToken(): Promise<void>;
   updateUser(user: User): void;
 }
 
@@ -29,11 +31,12 @@ const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 const AuthProvider: React.FC = ({ children }) => {
   const [data, setData] = useState<AuthState>(() => {
     const token = localStorage.getItem('@ofrs:token');
+    const refreshToken = localStorage.getItem('@ofrs:refreshToken');
     const user = localStorage.getItem('@ofrs:user');
 
-    if (token && user) {
+    if (token && user && refreshToken) {
       api.defaults.headers.authorization = `Bearer ${token}`;
-      return { token, user: JSON.parse(user) };
+      return { token, refreshToken, user: JSON.parse(user) };
     }
 
     return {} as AuthState;
@@ -44,18 +47,35 @@ const AuthProvider: React.FC = ({ children }) => {
       email,
       password,
     });
-    const { token, user } = response.data;
+    const { token, refreshToken, user } = response.data;
 
     localStorage.setItem('@ofrs:token', token);
     localStorage.setItem('@ofrs:user', JSON.stringify(user));
+    localStorage.setItem('@ofrs:refreshToken', refreshToken);
 
     api.defaults.headers.authorization = `Bearer ${token}`;
-    setData({ token, user });
+    setData({ token, refreshToken, user });
+  }, []);
+
+  const refreshToken = useCallback(async () => {
+    const currentRefreshToken = localStorage.getItem('@ofrs:refreshToken');
+    const response = await api.post('/refresh-tokens', {
+      refreshToken: currentRefreshToken,
+    });
+    const { token, refreshToken: newRefreshToken, user } = response.data;
+
+    localStorage.setItem('@ofrs:token', token);
+    localStorage.setItem('@ofrs:user', JSON.stringify(user));
+    localStorage.setItem('@ofrs:refreshToken', newRefreshToken);
+
+    api.defaults.headers.authorization = `Bearer ${token}`;
+    setData({ token, refreshToken: newRefreshToken, user });
   }, []);
 
   const signOut = useCallback(() => {
     localStorage.removeItem('@ofrs:token');
     localStorage.removeItem('@ofrs:user');
+    localStorage.removeItem('@ofrs:refreshToken');
 
     setData({} as AuthState);
   }, []);
@@ -65,10 +85,11 @@ const AuthProvider: React.FC = ({ children }) => {
       localStorage.setItem('@ofrs:user', JSON.stringify(user));
       setData({
         token: data.token,
+        refreshToken: data.refreshToken,
         user,
       });
     },
-    [setData, data.token],
+    [setData, data.token, data.refreshToken],
   );
 
   return (
@@ -77,6 +98,7 @@ const AuthProvider: React.FC = ({ children }) => {
         user: data.user,
         signIn,
         signOut,
+        refreshToken,
         updateUser,
       }}
     >

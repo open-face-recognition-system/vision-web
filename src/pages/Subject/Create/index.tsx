@@ -53,6 +53,11 @@ const CreateSubject: React.FC = () => {
             actionTitle="Criar"
             clearAllFields
             handleForm={handleCreateSubject}
+            handleTraining={() => {
+              return new Promise(resolve => {
+                resolve();
+              });
+            }}
             handleFormLoading={loading}
           />
         </Grid>

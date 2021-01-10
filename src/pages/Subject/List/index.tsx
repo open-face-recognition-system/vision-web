@@ -1,5 +1,7 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/jsx-indent */
 import React, { useEffect, useState } from 'react';
-
+import Chip from '@material-ui/core/Chip';
 import MaterialTable from 'material-table';
 
 import { useHistory } from 'react-router-dom';
@@ -38,6 +40,23 @@ const List: React.FC = () => {
           { title: 'Nome', field: 'name' },
           { title: 'Curso', field: 'course' },
           { title: 'Professor', field: 'teacher.user.name' },
+          {
+            title: 'Treinamento',
+            field: 'recognitionFile',
+            render: subject => subject.recognitionFile ? (
+              <Chip
+                color="primary"
+                style={{ backgroundColor: 'green' }}
+                label="Treinada"
+              />
+            ) : (
+                <Chip
+                  color="primary"
+                  style={{ backgroundColor: 'red' }}
+                  label="Não treinada"
+                />
+              )
+          }
         ]}
         data={subjects}
         totalCount={total}

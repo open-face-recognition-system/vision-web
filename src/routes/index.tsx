@@ -35,10 +35,10 @@ const Routes: React.FC = () => (
       isPrivate
     />
 
-    <Route path="/students" component={StudentList} isPrivate />
-    <Route path="/create-student" exact component={StudentCreate} isPrivate />
+    <Route path="/students" exact component={StudentList} isPrivate />
+    <Route path="/students/create" exact component={StudentCreate} isPrivate />
     <Route
-      path="/create-student/:id"
+      path="/students/:id/update"
       exact
       component={StudentCreate}
       isPrivate

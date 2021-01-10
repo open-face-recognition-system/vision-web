@@ -21,8 +21,11 @@ interface SubjectFormProps {
   actionTitle: string;
   defaultSubject?: Subject | null;
   handleFormLoading: boolean;
+  handleTrainingLoading?: boolean;
+  isUpdate?: boolean;
   clearAllFields?: boolean;
   handleForm: (params: CreateSubjectRequest) => Promise<void>;
+  handleTraining: () => Promise<void>;
 }
 
 
@@ -30,9 +33,12 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
   title,
   actionTitle,
   defaultSubject,
+  isUpdate,
   handleFormLoading,
+  handleTrainingLoading,
   clearAllFields,
   handleForm,
+  handleTraining
 }: SubjectFormProps) => {
   const history = useHistory();
   const { listTeachers } = useTeacher();
@@ -126,6 +132,7 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
               justify="space-between"
               alignItems="center"
             >
+
               {handleFormLoading ? (
                 <LoadingButton color="primary" />
               ) : (
@@ -148,8 +155,26 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
                       }
                     }}
                   />
+
                 )}
+              {isUpdate && (
+                <>
+                  {handleTrainingLoading ? (
+                    <LoadingButton color="primary" />
+                  ) : (
+                      <Button
+                        text="Treinar"
+                        color="primary"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleTraining();
+                        }}
+                      />
+                    )}
+                </>
+              )}
               <Button
+                variant="text"
                 text="Cancelar"
                 color="secondary"
                 onClick={() => {
@@ -166,7 +191,9 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
 
 SubjectForm.defaultProps = {
   defaultSubject: null,
-  clearAllFields: false
+  clearAllFields: false,
+  isUpdate: false,
+  handleTrainingLoading: false
 }
 
 export default SubjectForm;

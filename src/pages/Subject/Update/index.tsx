@@ -24,11 +24,12 @@ const UpdateSubject: React.FC = () => {
   const { id } = useParams<SubjectParams>();
 
   const { openSnack } = useSnack();
-  const { updateSubject, showSubject } = useSubject();
+  const { updateSubject, showSubject, training } = useSubject();
 
   const [subject, setSubject] = useState<Subject>({} as Subject);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [trainingLoading, setTrainingLoading] = useState(false);
 
   useEffect(() => {
     async function getSubjectInfo(): Promise<void> {
@@ -81,6 +82,29 @@ const UpdateSubject: React.FC = () => {
     [updateSubject, openSnack, id],
   );
 
+  const handleTraining = useCallback(
+    async () => {
+      setTrainingLoading(true);
+      try {
+        await training(Number(id));
+        openSnack({
+          type: 'success',
+          title: 'Treinamento realizado com sucesso',
+          open: true,
+        });
+      } catch (err) {
+        openSnack({
+          type: 'error',
+          title: 'Erro ao realizar treinamento',
+          open: true,
+        });
+      } finally {
+        setTrainingLoading(false);
+      }
+    },
+    [training, openSnack, id],
+  );
+
   return (
     <Container>
       {detailsLoading ? (
@@ -91,8 +115,11 @@ const UpdateSubject: React.FC = () => {
               <SubjectForm
                 title="Alterar matéria"
                 actionTitle="Alterar"
+                isUpdate
                 defaultSubject={subject}
                 handleForm={handleCreateSubject}
+                handleTraining={handleTraining}
+                handleTrainingLoading={trainingLoading}
                 handleFormLoading={loading}
               />
             </Grid>

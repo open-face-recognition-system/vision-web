@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import MaterialTable from 'material-table';
 
+import { useHistory } from 'react-router-dom';
 import { Student, useStudent } from '../../../hooks/student';
 
 const List: React.FC = () => {
+  const history = useHistory();
   const { listStudents } = useStudent();
 
   const [loading, setLoading] = React.useState(true);
@@ -45,7 +47,7 @@ const List: React.FC = () => {
             icon: 'add',
             tooltip: 'Adicionar Semestre',
             isFreeAction: true,
-            onClick: () => alert(`You saved`),
+            onClick: () => history.push(`/students/create`),
           },
           {
             icon: 'edit',

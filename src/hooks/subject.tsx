@@ -51,6 +51,7 @@ interface SubjectContextData {
   enrollStudent(id: number, studnetId: number): Promise<Student>;
   unenrollStudent(id: number, studnetId: number): Promise<void>;
   createSubject(subject: SubjectRequest): Promise<Subject>;
+  training(id: number): Promise<void>;
   updateSubject(id: number, subject: SubjectRequest): Promise<Subject>;
 }
 
@@ -122,6 +123,10 @@ const SubjectProvider: React.FC = ({ children }) => {
     return response.data;
   }, []);
 
+  const training = useCallback(async (id: number) => {
+    await api.post<Student>(`/training/${id}`);
+  }, []);
+
   return (
     <SubjectContext.Provider
       value={{
@@ -130,6 +135,7 @@ const SubjectProvider: React.FC = ({ children }) => {
         createSubject,
         updateSubject,
         enrollStudent,
+        training,
         unenrollStudent,
       }}
     >

@@ -5,16 +5,21 @@ import Route from './Route';
 
 import SignIn from '../pages/SignIn';
 import Dashboard from '../pages/Dashboard';
-import StudentList from '../pages/Student/List';
-import StudentCreate from '../pages/Student/Create';
-import TeacherList from '../pages/Teacher/List';
-import TeacherCreate from '../pages/Teacher/Create';
+import ListStudent from '../pages/Student/List';
+import CreateStudent from '../pages/Student/Create';
+import UpdateStudent from '../pages/Student/Update';
+import ListTeacher from '../pages/Teacher/List';
+import CreateTeacher from '../pages/Teacher/Create';
+import UpdateTeacher from '../pages/Teacher/Update';
 import ListSubjects from '../pages/Subject/List';
 import CreateSubject from '../pages/Subject/Create';
 import UpdateSubject from '../pages/Subject/Update';
 import ListSemesters from '../pages/Semester/List';
 import CreateSemesters from '../pages/Semester/Create';
 import UpdateSemesters from '../pages/Semester/Update';
+import ListClasses from '../pages/Class/List';
+import CreateClass from '../pages/Class/Create';
+import UpdateClass from '../pages/Class/Update';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -35,21 +40,21 @@ const Routes: React.FC = () => (
       isPrivate
     />
 
-    <Route path="/students" exact component={StudentList} isPrivate />
-    <Route path="/students/create" exact component={StudentCreate} isPrivate />
+    <Route path="/students" exact component={ListStudent} isPrivate />
+    <Route path="/students/create" exact component={CreateStudent} isPrivate />
     <Route
       path="/students/:id/update"
       exact
-      component={StudentCreate}
+      component={UpdateStudent}
       isPrivate
     />
 
-    <Route path="/teachers" component={TeacherList} isPrivate />
-    <Route path="/create-teacher" exact component={TeacherCreate} isPrivate />
+    <Route path="/teachers" exact component={ListTeacher} isPrivate />
+    <Route path="/teachers/create" exact component={CreateTeacher} isPrivate />
     <Route
-      path="/create-teacher/:id"
+      path="/teachers/:id/update"
       exact
-      component={TeacherCreate}
+      component={UpdateTeacher}
       isPrivate
     />
 
@@ -61,6 +66,10 @@ const Routes: React.FC = () => (
       component={UpdateSubject}
       isPrivate
     />
+
+    <Route path="/classes" exact component={ListClasses} isPrivate />
+    <Route path="/classes/create" exact component={CreateClass} isPrivate />
+    <Route path="/classes/:id/update" exact component={UpdateClass} isPrivate />
   </Switch>
 );
 

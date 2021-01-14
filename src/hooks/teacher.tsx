@@ -7,6 +7,11 @@ export interface Teacher {
   user: User;
 }
 
+export interface UpdateTeacherRequest {
+  name: string;
+  email: string;
+}
+
 export interface User {
   id: number;
   name: string;
@@ -51,6 +56,7 @@ interface TeacherContextData {
   ): Promise<PaginationAwareObject>;
   showTeacher(id: number): Promise<Teacher>;
   createTeacher(teacher: TeacherRequest): Promise<Teacher>;
+  updateTeacher(id: number, teacher: UpdateTeacherRequest): Promise<Teacher>;
 }
 
 const TeacherContext = createContext<TeacherContextData>(
@@ -109,6 +115,17 @@ const TeacherProvider: React.FC = ({ children }) => {
     return response.data;
   }, []);
 
+  const updateTeacher = useCallback(
+    async (id: number, { name, email }: UpdateTeacherRequest) => {
+      const response = await api.put<Teacher>(`/teachers/${id}`, {
+        name,
+        email,
+      });
+      return response.data;
+    },
+    [],
+  );
+
   return (
     <TeacherContext.Provider
       value={{
@@ -116,6 +133,7 @@ const TeacherProvider: React.FC = ({ children }) => {
         listTeachers,
         showTeacher,
         createTeacher,
+        updateTeacher,
       }}
     >
       {children}

@@ -101,6 +101,7 @@ const SemesterForm: React.FC<SemesterFormProps> = ({
               <Button
                 text="Cancelar"
                 color="secondary"
+                variant="text"
                 onClick={() => {
                   history.goBack();
                 }}

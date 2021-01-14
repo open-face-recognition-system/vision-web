@@ -6,6 +6,7 @@ import { SnackProvider } from './snackbar';
 import { TeacherProvider } from './teacher';
 import { SubjectProvider } from './subject';
 import { SemesterProvider } from './semester';
+import { ClassItemProvider } from './class';
 
 const AppProvider: React.FC = ({ children }) => (
   <AuthProvider>
@@ -13,7 +14,9 @@ const AppProvider: React.FC = ({ children }) => (
       <TeacherProvider>
         <SubjectProvider>
           <SemesterProvider>
-            <SnackProvider>{children}</SnackProvider>
+            <ClassItemProvider>
+              <SnackProvider>{children}</SnackProvider>
+            </ClassItemProvider>
           </SemesterProvider>
         </SubjectProvider>
       </TeacherProvider>

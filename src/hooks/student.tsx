@@ -8,6 +8,11 @@ export interface Student {
   photos: Photo[];
 }
 
+export interface UpdateStudentRequest {
+  name: string;
+  email: string;
+}
+
 export interface User {
   id: number;
   name: string;
@@ -52,6 +57,7 @@ interface StudentContextData {
   ): Promise<PaginationAwareObject>;
   showStudent(id: number): Promise<Student>;
   createStudent(student: StudentRequest): Promise<Student>;
+  updateStudent(id: number, teacher: UpdateStudentRequest): Promise<Student>;
 }
 
 const StudentContext = createContext<StudentContextData>(
@@ -110,6 +116,17 @@ const StudentProvider: React.FC = ({ children }) => {
     return response.data;
   }, []);
 
+  const updateStudent = useCallback(
+    async (id: number, { name, email }: UpdateStudentRequest) => {
+      const response = await api.put<Student>(`/students/${id}`, {
+        name,
+        email,
+      });
+      return response.data;
+    },
+    [],
+  );
+
   return (
     <StudentContext.Provider
       value={{
@@ -117,6 +134,7 @@ const StudentProvider: React.FC = ({ children }) => {
         listStudents,
         showStudent,
         createStudent,
+        updateStudent,
       }}
     >
       {children}

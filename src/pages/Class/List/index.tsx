@@ -1,119 +1,112 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { parseISO, format } from 'date-fns';
-import MaterialTable from 'material-table';
-
 import { useHistory } from 'react-router-dom';
-import { Semester, useSemester } from '../../../hooks/semester';
-import ConfirmDialog from '../../../components/ConfirmDialog';
+import MaterialTable from 'material-table';
 import { useSnack } from '../../../hooks/snackbar';
+import { ClassItem, useClassItem } from '../../../hooks/class';
+import ConfirmDialog from '../../../components/ConfirmDialog';
 
 const List: React.FC = () => {
   const history = useHistory();
   const { openSnack } = useSnack();
-
-  const { listSemesters, deleteSemester } = useSemester();
+  const { listClasses, deleteClass } = useClassItem();
 
   const [loading, setLoading] = React.useState(true);
   const [total, setTotal] = useState(0);
   const [limit, setLimit] = useState(5);
+  const [page, setPage] = useState(0);
   const [currentId, setCurrentId] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [page, setPage] = useState(0);
-  const [semesters, setSemesters] = React.useState<Semester[]>([]);
+  const [classes, setClasses] = React.useState<ClassItem[]>([]);
 
   useEffect(() => {
     async function getAllSubjects(): Promise<void> {
       setLoading(true);
-      const subjectsResponse = await listSemesters({
+      const subjectsResponse = await listClasses({
         page: page + 1,
         limit,
       });
-      setSemesters(subjectsResponse.data);
+      setClasses(subjectsResponse.data);
       setTotal(subjectsResponse.total);
       setLoading(false);
     }
 
     getAllSubjects();
-  }, [listSemesters, limit, page]);
+  }, [listClasses, limit, page]);
 
-  const handleDeleteSemester = useCallback(async () => {
+  const handleDeleteClass = useCallback(async () => {
     if (currentId) {
       try {
-        await deleteSemester(currentId);
+        await deleteClass(currentId);
         openSnack({
           type: 'success',
-          title: 'Sucesso ao deletar semestre',
+          title: 'Sucesso ao deletar aula',
           open: true,
         });
-        setSemesters(semesters.filter(semester => semester.id !== currentId));
+        setClasses(classes.filter(classItem => classItem.id !== currentId));
       } catch {
         openSnack({
           type: 'error',
-          title: 'Erro ao criar semestre',
+          title: 'Erro ao criar aula',
           open: true,
         });
       }
     }
     setOpenDialog(false);
-  }, [currentId, deleteSemester, openSnack, semesters]);
+  }, [currentId, deleteClass, openSnack, setClasses, classes]);
 
   return (
     <div style={{ minWidth: '100%' }}>
       <ConfirmDialog
         open={openDialog}
-        title="Deletar semestre"
-        description="Deseja realmente deletar o semestre?"
+        title="Deletar aula"
+        description="Deseja realmente deletar o aula?"
         handleCancel={() => {
           setOpenDialog(false);
         }}
-        handleConfirm={handleDeleteSemester}
+        handleConfirm={handleDeleteClass}
       />
       <MaterialTable
         isLoading={loading}
         columns={[
           {
-            title: 'Início',
-            field: 'startDate',
-            render: semester => {
-              const firstDate = parseISO(String(semester.startDate));
+            title: 'Data',
+            field: 'date',
+            render: classItem => {
+              const firstDate = parseISO(String(classItem.date));
               const formattedDate = format(firstDate, 'dd/MM/yyyy');
-              return <p>{formattedDate}</p>;
+              return <>{formattedDate}</>;
             },
           },
           {
-            title: 'Fim',
-            field: 'endDate',
-            render: semester => {
-              const endDate = parseISO(String(semester.endDate));
-              const formattedDate = format(endDate, 'dd/MM/yyyy');
-              return <p>{formattedDate}</p>;
-            },
+            title: 'Matéria',
+            field: 'subject.name',
           },
         ]}
-        data={semesters}
+        data={classes}
         totalCount={total}
         page={page}
         actions={[
           {
             icon: 'add',
-            tooltip: 'Adicionar Semestre',
+            tooltip: 'Adicionar Aula',
             isFreeAction: true,
-            onClick: () => history.push(`/semesters/create`),
+            onClick: () => history.push(`/classes/create`),
           },
           {
             icon: 'edit',
-            tooltip: 'Editar Semestre',
+            tooltip: 'Editar Aula',
             onClick: (event, rowData) => {
-              const semester = rowData as Semester;
-              history.push(`/semesters/${semester.id}/update`);
+              const classItem = rowData as ClassItem;
+              history.push(`/classes/${classItem.id}/update`);
             },
           },
           () => ({
             icon: 'delete',
-            tooltip: 'Deletar Semestre',
+            tooltip: 'Deletar Aula',
             onClick: (event, rowData) => {
-              const semester = rowData as Semester;
-              setCurrentId(semester.id);
+              const classItem = rowData as ClassItem;
+              setCurrentId(classItem.id);
               setOpenDialog(true);
             },
           }),
@@ -128,7 +121,7 @@ const List: React.FC = () => {
         options={{
           actionsColumnIndex: -1,
         }}
-        title="Semestres"
+        title="Aulas"
       />
     </div>
   );

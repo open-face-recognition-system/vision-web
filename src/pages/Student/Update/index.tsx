@@ -6,40 +6,41 @@ import Grid from '@material-ui/core/Grid';
 
 import { useParams } from 'react-router-dom';
 
-import { Teacher, useTeacher } from '../../../hooks/teacher';
+import { Student, useStudent } from '../../../hooks/student';
 import { useSnack } from '../../../hooks/snackbar';
 
-import CreateTeacherRequest from '../../../dtos/CreateTeacherRequest';
+import CreateStudentRequest from '../../../dtos/CreateStudentRequest';
 
-import TeacherForm from '../components/TeacherForm';
+import StudentForm from '../components/StudentForm';
 import Container from '../../../components/Container';
 import GlobalLoading from '../../../components/GlobalLoading';
 
-interface TeacherParams {
+interface StudentParams {
   id?: string | undefined;
 }
 
-const UpdateTeacher: React.FC = () => {
-  const { id } = useParams<TeacherParams>();
+const UpdateStudent: React.FC = () => {
+  const { id } = useParams<StudentParams>();
 
   const { openSnack } = useSnack();
-  const { updateTeacher, showTeacher } = useTeacher();
+  const { updateStudent, showStudent } = useStudent();
 
-  const [teacher, setTeacher] = useState<Teacher>({} as Teacher);
+  const [student, setStudent] = useState<Student>({} as Student);
   const [detailsLoading, setDetailsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    async function getTeacherInfo(): Promise<void> {
+    async function getStudentInfo(): Promise<void> {
       try {
         setDetailsLoading(true);
-        const teacherExists = await showTeacher(Number(id));
-        setTeacher(teacherExists);
+        const studentExists = await showStudent(Number(id));
+        console.log(studentExists);
+        setStudent(studentExists);
       } catch {
-        setTeacher({} as Teacher);
+        setStudent({} as Student);
         openSnack({
           type: 'error',
-          title: 'Erro ao buscar professor',
+          title: 'Erro ao buscar aluno',
           open: true,
         });
       } finally {
@@ -47,35 +48,35 @@ const UpdateTeacher: React.FC = () => {
       }
     }
     if (id) {
-      getTeacherInfo();
+      getStudentInfo();
     }
-  }, [id, showTeacher, openSnack]);
+  }, [id, showStudent, openSnack]);
 
-  const handleUpdateTeacher = useCallback(
-    async ({ name, email }: CreateTeacherRequest) => {
+  const handleUpdateStudent = useCallback(
+    async ({ name, email }: CreateStudentRequest) => {
       setLoading(true);
       try {
-        await updateTeacher(Number(id), {
+        await updateStudent(Number(id), {
           name,
           email,
         });
         openSnack({
           type: 'success',
-          title: 'Sucesso ao alterar professor',
+          title: 'Sucesso ao alterar aluno',
           open: true,
         });
       } catch (err) {
         openSnack({
           type: 'error',
-          title: 'Erro ao alterar professor',
+          title: 'Erro ao alterar aluno',
           open: true,
         });
       } finally {
-        setTeacher({} as Teacher);
+        setStudent({} as Student);
         setLoading(false);
       }
     },
-    [updateTeacher, openSnack, id],
+    [updateStudent, openSnack, id],
   );
 
   return (
@@ -85,12 +86,12 @@ const UpdateTeacher: React.FC = () => {
       ) : (
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <TeacherForm
-                title="Alterar professor"
+              <StudentForm
+                title="Alterar aluno"
                 actionTitle="Alterar"
                 isUpdate
-                defaultTeacher={teacher}
-                handleForm={handleUpdateTeacher}
+                defaultStudent={student}
+                handleForm={handleUpdateStudent}
                 handleFormLoading={loading}
               />
             </Grid>
@@ -100,4 +101,4 @@ const UpdateTeacher: React.FC = () => {
   );
 };
 
-export default UpdateTeacher;
+export default UpdateStudent;

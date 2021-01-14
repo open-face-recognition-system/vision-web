@@ -8,6 +8,7 @@ import {
   Assignment,
   Subject,
   CalendarToday,
+  Class,
 } from '@material-ui/icons';
 
 import { useHistory } from 'react-router-dom';
@@ -29,7 +30,13 @@ export const MainListItems: React.FC = () => {
         </ListItemIcon>
         <ListItemText primary="Semestres" />
       </ListItem>
-      <ListItem button onClick={() => history.push('/teachers')}>
+      <ListItem button onClick={() => history.push('/classes')}>
+        <ListItemIcon>
+          <Class />
+        </ListItemIcon>
+        <ListItemText primary="Aulas" />
+      </ListItem>
+      <ListItem button onClick={() => history.push('/classes')}>
         <ListItemIcon>
           <People />
         </ListItemIcon>

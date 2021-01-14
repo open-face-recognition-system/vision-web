@@ -18,6 +18,7 @@ interface TeacherFormProps {
   title: string;
   actionTitle: string;
   defaultTeacher?: Teacher | null;
+  isUpdate?: boolean;
   handleFormLoading: boolean;
   clearAllFields?: boolean;
   handleForm: (params: CreateTeacherRequest) => Promise<void>;
@@ -28,15 +29,16 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
   title,
   actionTitle,
   defaultTeacher,
+  isUpdate,
   handleFormLoading,
   clearAllFields,
   handleForm,
 }: TeacherFormProps) => {
   const history = useHistory();
 
-  const [name, setName] = useState(defaultTeacher?.user.name || "");
-  const [email, setEmail] = useState('');
-  const [enrollment, setEnrollment] = useState('');
+  const [name, setName] = useState(defaultTeacher?.user?.name || "");
+  const [email, setEmail] = useState(defaultTeacher?.user?.email || "");
+  const [enrollment, setEnrollment] = useState(defaultTeacher?.enrollment || "");
 
   return (
     <Paper>
@@ -66,15 +68,17 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
               setValue={setEmail}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Matrícula"
-              name="enrollment"
-              value={enrollment}
-              disabled={false}
-              setValue={setEnrollment}
-            />
-          </Grid>
+          {!isUpdate && (
+            <Grid item xs={12}>
+              <TextField
+                label="Matrícula"
+                name="enrollment"
+                value={enrollment}
+                disabled={false}
+                setValue={setEnrollment}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}>
             <Grid
               container
@@ -106,6 +110,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
               <Button
                 text="Cancelar"
                 color="secondary"
+                variant="text"
                 onClick={() => {
                   history.goBack();
                 }}
@@ -120,6 +125,7 @@ const TeacherForm: React.FC<TeacherFormProps> = ({
 
 TeacherForm.defaultProps = {
   defaultTeacher: null,
+  isUpdate: false,
   clearAllFields: false
 }
 

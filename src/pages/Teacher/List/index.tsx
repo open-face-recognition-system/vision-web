@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import MaterialTable from 'material-table';
-
+import { useHistory } from 'react-router-dom';
 import { Teacher, useTeacher } from '../../../hooks/teacher';
 
 const List: React.FC = () => {
+  const history = useHistory();
   const { listTeachers } = useTeacher();
 
   const [loading, setLoading] = React.useState(true);
@@ -43,18 +44,21 @@ const List: React.FC = () => {
         actions={[
           {
             icon: 'add',
-            tooltip: 'Adicionar Semestre',
+            tooltip: 'Adicionar Professor',
             isFreeAction: true,
-            onClick: () => alert(`You saved`),
+            onClick: () => history.push(`/teachers/create`),
           },
           {
             icon: 'edit',
-            tooltip: 'Editar Semestre',
-            onClick: () => alert(`You saved`),
+            tooltip: 'Editar Professor',
+            onClick: (event, rowData) => {
+              const teacher = rowData as Teacher;
+              history.push(`/teachers/${teacher.id}/update`);
+            },
           },
           () => ({
             icon: 'delete',
-            tooltip: 'Deletar Semestre',
+            tooltip: 'Deletar Professor',
             onClick: () => alert(`You saved`),
           }),
         ]}

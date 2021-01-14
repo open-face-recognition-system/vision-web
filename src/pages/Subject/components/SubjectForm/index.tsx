@@ -132,7 +132,6 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
               justify="space-between"
               alignItems="center"
             >
-
               {handleFormLoading ? (
                 <LoadingButton color="primary" />
               ) : (

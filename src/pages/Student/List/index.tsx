@@ -45,18 +45,21 @@ const List: React.FC = () => {
         actions={[
           {
             icon: 'add',
-            tooltip: 'Adicionar Semestre',
+            tooltip: 'Adicionar Aluno',
             isFreeAction: true,
             onClick: () => history.push(`/students/create`),
           },
           {
             icon: 'edit',
-            tooltip: 'Editar Semestre',
-            onClick: () => alert(`You saved`),
+            tooltip: 'Editar Aluno',
+            onClick: (event, rowData) => {
+              const student = rowData as Student;
+              history.push(`/students/${student.id}/update`);
+            },
           },
           () => ({
             icon: 'delete',
-            tooltip: 'Deletar Semestre',
+            tooltip: 'Deletar Aluno',
             onClick: () => alert(`You saved`),
           }),
         ]}

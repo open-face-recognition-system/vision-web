@@ -18,6 +18,7 @@ interface StudentFormProps {
   title: string;
   actionTitle: string;
   defaultStudent?: Student | null;
+  isUpdate?: boolean;
   handleFormLoading: boolean;
   clearAllFields?: boolean;
   handleForm: (params: CreateStudentRequest) => Promise<void>;
@@ -28,15 +29,16 @@ const StudentForm: React.FC<StudentFormProps> = ({
   title,
   actionTitle,
   defaultStudent,
+  isUpdate,
   handleFormLoading,
   clearAllFields,
   handleForm,
 }: StudentFormProps) => {
   const history = useHistory();
 
-  const [name, setName] = useState(defaultStudent?.user.name || "");
-  const [email, setEmail] = useState('');
-  const [enrollment, setEnrollment] = useState('');
+  const [name, setName] = useState(defaultStudent?.user?.name || "");
+  const [email, setEmail] = useState(defaultStudent?.user?.email || "");
+  const [enrollment, setEnrollment] = useState(defaultStudent?.enrollment || "");
 
   return (
     <Paper>
@@ -66,15 +68,19 @@ const StudentForm: React.FC<StudentFormProps> = ({
               setValue={setEmail}
             />
           </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Matrícula"
-              name="enrollment"
-              value={enrollment}
-              disabled={false}
-              setValue={setEnrollment}
-            />
-          </Grid>
+          {
+            !isUpdate && (
+              <Grid item xs={12}>
+                <TextField
+                  label="Matrícula"
+                  name="enrollment"
+                  value={enrollment}
+                  disabled={false}
+                  setValue={setEnrollment}
+                />
+              </Grid>
+            )
+          }
           <Grid item xs={12}>
             <Grid
               container
@@ -106,6 +112,7 @@ const StudentForm: React.FC<StudentFormProps> = ({
               <Button
                 text="Cancelar"
                 color="secondary"
+                variant="text"
                 onClick={() => {
                   history.goBack();
                 }}
@@ -120,6 +127,7 @@ const StudentForm: React.FC<StudentFormProps> = ({
 
 StudentForm.defaultProps = {
   defaultStudent: null,
+  isUpdate: false,
   clearAllFields: false
 }
 

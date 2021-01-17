@@ -34,7 +34,6 @@ const UpdateStudent: React.FC = () => {
       try {
         setDetailsLoading(true);
         const studentExists = await showStudent(Number(id));
-        console.log(studentExists);
         setStudent(studentExists);
       } catch {
         setStudent({} as Student);

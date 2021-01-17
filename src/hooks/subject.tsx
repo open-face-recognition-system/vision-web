@@ -13,7 +13,9 @@ export interface Subject {
 }
 
 export interface StudentSubject {
+  attendanceId: number;
   isEnrolled: boolean;
+  isPresent: boolean;
   student: Student;
 }
 
@@ -53,6 +55,7 @@ interface SubjectContextData {
   createSubject(subject: SubjectRequest): Promise<Subject>;
   training(id: number): Promise<void>;
   updateSubject(id: number, subject: SubjectRequest): Promise<Subject>;
+  deleteSubject(id: number): Promise<void>;
 }
 
 const SubjectContext = createContext<SubjectContextData>(
@@ -127,6 +130,10 @@ const SubjectProvider: React.FC = ({ children }) => {
     await api.post<Student>(`/training/${id}`);
   }, []);
 
+  const deleteSubject = useCallback(async (id: number) => {
+    await api.delete(`/subjects/${id}`);
+  }, []);
+
   return (
     <SubjectContext.Provider
       value={{
@@ -137,6 +144,7 @@ const SubjectProvider: React.FC = ({ children }) => {
         enrollStudent,
         training,
         unenrollStudent,
+        deleteSubject,
       }}
     >
       {children}

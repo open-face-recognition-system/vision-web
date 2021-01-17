@@ -51,6 +51,8 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
         ...currentEnrolledStudents,
         {
           isEnrolled: true,
+          attendanceId: 0,
+          isPresent: false,
           student: enrolledStudent,
         },
       ]);

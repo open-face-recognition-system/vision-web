@@ -36,7 +36,7 @@ export const MainListItems: React.FC = () => {
         </ListItemIcon>
         <ListItemText primary="Aulas" />
       </ListItem>
-      <ListItem button onClick={() => history.push('/classes')}>
+      <ListItem button onClick={() => history.push('/teachers')}>
         <ListItemIcon>
           <People />
         </ListItemIcon>

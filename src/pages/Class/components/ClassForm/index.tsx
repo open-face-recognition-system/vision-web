@@ -1,11 +1,10 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-indent */
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Grid, TextField } from '@material-ui/core';
 import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { Autocomplete } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
-import { format, parseISO, isValid } from 'date-fns';
 import Paper from '../../../../components/Paper';
 import Title from '../../../../components/Title';
 import Button from '../../../../components/Button';
@@ -48,15 +47,6 @@ const ClassForm: React.FC<ClassFormProps> = ({
   const [semester, setSemester] = useState<Semester>(
     defaultClass?.semester || {} as Semester,
   );
-
-  const formatDate = useCallback((dateToFormat: Date) => {
-    if (isValid(dateToFormat)) {
-      const firstDate = parseISO(String(dateToFormat));
-      const formattedDate = format(firstDate, 'dd/MM/yyyy');
-      return formattedDate;
-    }
-    return ""
-  }, [])
 
   return (
     <Paper>
@@ -144,10 +134,7 @@ const ClassForm: React.FC<ClassFormProps> = ({
                 return false;
               }}
               getOptionLabel={option => {
-                if (defaultClass !== null) {
-                  return `${formatDate(option.startDate)} - ${formatDate(option.endDate)}`
-                }
-                return ""
+                return `${option.startDate} - ${option.endDate}`
               }}
               renderInput={params => (
                 <TextField {...params} label="Semestre" variant="outlined" />

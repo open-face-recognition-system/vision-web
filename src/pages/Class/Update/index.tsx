@@ -76,6 +76,10 @@ const UpdateClass: React.FC = () => {
       semesterId, }: CreateClassRequest) => {
       setLoading(true);
       try {
+        if (startHour && endHour && date) {
+          startHour.setDate(date.getDate());
+          endHour.setDate(date.getDate());
+        }
         await updateClass(Number(id), {
           startHour,
           endHour,

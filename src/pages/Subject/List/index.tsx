@@ -1,20 +1,25 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-indent */
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Chip from '@material-ui/core/Chip';
 import MaterialTable from 'material-table';
 
 import { useHistory } from 'react-router-dom';
 import { Subject, useSubject } from '../../../hooks/subject';
+import { useSnack } from '../../../hooks/snackbar';
+import ConfirmDialog from '../../../components/ConfirmDialog';
 
 const List: React.FC = () => {
   const history = useHistory();
+  const { openSnack } = useSnack();
 
-  const { listSubjects } = useSubject();
+  const { listSubjects, deleteSubject } = useSubject();
   const [loading, setLoading] = React.useState(true);
   const [total, setTotal] = useState(0);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(0);
+  const [currentId, setCurrentId] = useState<number | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
   const [subjects, setSubjects] = React.useState<Subject[]>([]);
 
   useEffect(() => {
@@ -32,8 +37,38 @@ const List: React.FC = () => {
     getAllSubjects();
   }, [listSubjects, limit, page]);
 
+  const handleDeleteSubject = useCallback(async () => {
+    if (currentId) {
+      try {
+        await deleteSubject(currentId);
+        openSnack({
+          type: 'success',
+          title: 'Sucesso ao deletar matéria',
+          open: true,
+        });
+        setSubjects(subjects.filter(subject => subject.id !== currentId));
+      } catch {
+        openSnack({
+          type: 'error',
+          title: 'Erro ao deletar matéria',
+          open: true,
+        });
+      }
+    }
+    setOpenDialog(false);
+  }, [currentId, deleteSubject, openSnack, setSubjects, subjects]);
+
   return (
     <div style={{ minWidth: '100%' }}>
+      <ConfirmDialog
+        open={openDialog}
+        title="Deletar matéria"
+        description="Deseja realmente deletar o matéria?"
+        handleCancel={() => {
+          setOpenDialog(false);
+        }}
+        handleConfirm={handleDeleteSubject}
+      />
       <MaterialTable
         isLoading={loading}
         columns={[
@@ -79,7 +114,11 @@ const List: React.FC = () => {
           () => ({
             icon: 'delete',
             tooltip: 'Deletar Semestre',
-            onClick: () => alert(`You saved`),
+            onClick: (event, rowData) => {
+              const subject = rowData as Subject;
+              setCurrentId(subject.id);
+              setOpenDialog(true);
+            },
           }),
         ]}
         onChangePage={newPage => {

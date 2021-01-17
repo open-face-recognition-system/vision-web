@@ -52,6 +52,10 @@ const CreateClass: React.FC = () => {
     }: CreateClassRequest) => {
       setLoading(true);
       try {
+        if (startHour && endHour && date) {
+          startHour.setDate(date.getDate());
+          endHour.setDate(date.getDate());
+        }
         await createClass({
           startHour,
           endHour,

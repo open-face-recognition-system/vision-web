@@ -20,6 +20,7 @@ import UpdateSemesters from '../pages/Semester/Update';
 import ListClasses from '../pages/Class/List';
 import CreateClass from '../pages/Class/Create';
 import UpdateClass from '../pages/Class/Update';
+import listAttendances from '../pages/Attendance/List';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -70,6 +71,12 @@ const Routes: React.FC = () => (
     <Route path="/classes" exact component={ListClasses} isPrivate />
     <Route path="/classes/create" exact component={CreateClass} isPrivate />
     <Route path="/classes/:id/update" exact component={UpdateClass} isPrivate />
+    <Route
+      path="/classes/:id/attendances"
+      exact
+      component={listAttendances}
+      isPrivate
+    />
   </Switch>
 );
 

@@ -47,7 +47,7 @@ const List: React.FC = () => {
       } catch {
         openSnack({
           type: 'error',
-          title: 'Erro ao criar aula',
+          title: 'Erro ao deletar aula',
           open: true,
         });
       }
@@ -117,6 +117,10 @@ const List: React.FC = () => {
         onChangeRowsPerPage={newLimit => {
           setLimit(newLimit);
           setPage(0);
+        }}
+        onRowClick={(event, rowData) => {
+          const classItem = rowData as ClassItem;
+          history.push(`/classes/${classItem.id}/attendances`);
         }}
         options={{
           actionsColumnIndex: -1,

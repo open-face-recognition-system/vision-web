@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import MaterialTable from 'material-table';
 
 import { useHistory } from 'react-router-dom';
 import { Student, useStudent } from '../../../hooks/student';
+import { useSnack } from '../../../hooks/snackbar';
+import ConfirmDialog from '../../../components/ConfirmDialog';
 
 const List: React.FC = () => {
   const history = useHistory();
-  const { listStudents } = useStudent();
+  const { openSnack } = useSnack();
+  const { listStudents, deleteStudent } = useStudent();
 
   const [loading, setLoading] = React.useState(true);
   const [total, setTotal] = useState(0);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(0);
+  const [currentId, setCurrentId] = useState<number | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
   const [students, setStudents] = React.useState<Student[]>([]);
 
   useEffect(() => {
@@ -30,8 +35,38 @@ const List: React.FC = () => {
     getAllSubjects();
   }, [listStudents, limit, page]);
 
+  const handleDeleteStudent = useCallback(async () => {
+    if (currentId) {
+      try {
+        await deleteStudent(currentId);
+        openSnack({
+          type: 'success',
+          title: 'Sucesso ao deletar aluno',
+          open: true,
+        });
+        setStudents(students.filter(student => student.user.id !== currentId));
+      } catch {
+        openSnack({
+          type: 'error',
+          title: 'Erro ao deletar aluno',
+          open: true,
+        });
+      }
+    }
+    setOpenDialog(false);
+  }, [currentId, deleteStudent, openSnack, setStudents, students]);
+
   return (
     <div style={{ minWidth: '100%' }}>
+      <ConfirmDialog
+        open={openDialog}
+        title="Deletar aluno"
+        description="Deseja realmente deletar o aluno?"
+        handleCancel={() => {
+          setOpenDialog(false);
+        }}
+        handleConfirm={handleDeleteStudent}
+      />
       <MaterialTable
         isLoading={loading}
         columns={[
@@ -60,12 +95,13 @@ const List: React.FC = () => {
           () => ({
             icon: 'delete',
             tooltip: 'Deletar Aluno',
-            onClick: () => alert(`You saved`),
+            onClick: (event, rowData) => {
+              const student = rowData as Student;
+              setCurrentId(student.user.id);
+              setOpenDialog(true);
+            },
           }),
         ]}
-        onRowClick={() => {
-          alert(`You saved`);
-        }}
         onChangePage={newPage => {
           setPage(newPage);
         }}

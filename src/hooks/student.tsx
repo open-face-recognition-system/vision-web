@@ -58,6 +58,7 @@ interface StudentContextData {
   showStudent(id: number): Promise<Student>;
   createStudent(student: StudentRequest): Promise<Student>;
   updateStudent(id: number, teacher: UpdateStudentRequest): Promise<Student>;
+  deleteStudent(id: number): Promise<void>;
 }
 
 const StudentContext = createContext<StudentContextData>(
@@ -127,6 +128,10 @@ const StudentProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const deleteStudent = useCallback(async (id: number) => {
+    await api.delete(`/users/${id}`);
+  }, []);
+
   return (
     <StudentContext.Provider
       value={{
@@ -135,6 +140,7 @@ const StudentProvider: React.FC = ({ children }) => {
         showStudent,
         createStudent,
         updateStudent,
+        deleteStudent,
       }}
     >
       {children}

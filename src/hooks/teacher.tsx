@@ -57,6 +57,7 @@ interface TeacherContextData {
   showTeacher(id: number): Promise<Teacher>;
   createTeacher(teacher: TeacherRequest): Promise<Teacher>;
   updateTeacher(id: number, teacher: UpdateTeacherRequest): Promise<Teacher>;
+  deleteTeacher(id: number): Promise<void>;
 }
 
 const TeacherContext = createContext<TeacherContextData>(
@@ -126,6 +127,10 @@ const TeacherProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const deleteTeacher = useCallback(async (id: number) => {
+    await api.delete(`/users/${id}`);
+  }, []);
+
   return (
     <TeacherContext.Provider
       value={{
@@ -134,6 +139,7 @@ const TeacherProvider: React.FC = ({ children }) => {
         showTeacher,
         createTeacher,
         updateTeacher,
+        deleteTeacher,
       }}
     >
       {children}

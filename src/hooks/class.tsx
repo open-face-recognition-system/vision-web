@@ -1,7 +1,9 @@
 import React, { createContext, useCallback, useContext } from 'react';
 import CreateClassRequest from '../dtos/CreateClassRequest';
+import CreateAttendanceRequest from '../dtos/CreateAttendanceRequest';
 import api from '../services/api';
 import { Semester } from './semester';
+import { Student } from './student';
 import { Subject } from './subject';
 
 export interface ClassItem {
@@ -11,6 +13,13 @@ export interface ClassItem {
   date: Date;
   subject: Subject;
   semester: Semester;
+  attendances: Attendance[];
+}
+
+export interface Attendance {
+  id: number;
+  isPresent: boolean;
+  student: Student;
 }
 
 interface Pagination {
@@ -28,6 +37,10 @@ interface ClassItemContextData {
   showClass(id: number): Promise<ClassItem>;
   createClass(classRequest: CreateClassRequest): Promise<ClassItem>;
   updateClass(id: number, classRequest: CreateClassRequest): Promise<ClassItem>;
+  updateAttendanceClass(
+    id: number,
+    createAttendance: CreateAttendanceRequest,
+  ): Promise<ClassItem>;
   deleteClass(id: number): Promise<void>;
 }
 
@@ -42,6 +55,7 @@ const ClassItemProvider: React.FC = ({ children }) => {
       params: {
         page,
         limit,
+        order: '+startHour',
       },
     });
 
@@ -94,6 +108,21 @@ const ClassItemProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const updateAttendanceClass = useCallback(
+    async (
+      id: number,
+      { isPresent, classId, studentId }: CreateAttendanceRequest,
+    ) => {
+      const response = await api.put<ClassItem>(`/attendances/${id}`, {
+        isPresent,
+        classId,
+        studentId,
+      });
+      return response.data;
+    },
+    [],
+  );
+
   const deleteClass = useCallback(async (id: number) => {
     await api.delete(`/classes/${id}`);
   }, []);
@@ -105,6 +134,7 @@ const ClassItemProvider: React.FC = ({ children }) => {
         showClass,
         createClass,
         updateClass,
+        updateAttendanceClass,
         deleteClass,
       }}
     >

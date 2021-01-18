@@ -30,6 +30,7 @@
     "import/no-duplicates": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off",
+    "no-nested-ternary": "off",
     "react/prop-types": "off",
     "no-unused-expressions": "off",
     "@typescript-eslint/camelcase": "off",

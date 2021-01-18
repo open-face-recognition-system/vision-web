@@ -124,6 +124,7 @@ const List: React.FC = () => {
         }}
         options={{
           actionsColumnIndex: -1,
+          pageSize: 10,
         }}
         title="Aulas"
       />

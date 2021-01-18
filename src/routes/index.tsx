@@ -8,6 +8,7 @@ import Dashboard from '../pages/Dashboard';
 import ListStudent from '../pages/Student/List';
 import CreateStudent from '../pages/Student/Create';
 import UpdateStudent from '../pages/Student/Update';
+import DetailsStudent from '../pages/Student/Details';
 import ListTeacher from '../pages/Teacher/List';
 import CreateTeacher from '../pages/Teacher/Create';
 import UpdateTeacher from '../pages/Teacher/Update';
@@ -47,6 +48,12 @@ const Routes: React.FC = () => (
       path="/students/:id/update"
       exact
       component={UpdateStudent}
+      isPrivate
+    />
+    <Route
+      path="/students/:id/details"
+      exact
+      component={DetailsStudent}
       isPrivate
     />
 

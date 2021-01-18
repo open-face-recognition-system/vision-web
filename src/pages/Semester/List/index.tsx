@@ -15,7 +15,7 @@ const List: React.FC = () => {
 
   const [loading, setLoading] = React.useState(true);
   const [total, setTotal] = useState(0);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [currentId, setCurrentId] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [page, setPage] = useState(0);
@@ -127,6 +127,8 @@ const List: React.FC = () => {
         }}
         options={{
           actionsColumnIndex: -1,
+          search: false,
+          pageSize: 10,
         }}
         title="Semestres"
       />

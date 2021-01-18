@@ -10,6 +10,7 @@ import {
 import { useAuth } from '../hooks/auth';
 
 import AuthLayout from '../layout/auth'
+import TeacherLayout from '../layout/teacher'
 import DefaultLayout from '../layout/default'
 
 interface RouteProps extends ReactDOMRouteProps {
@@ -26,8 +27,7 @@ const Route: React.FC<RouteProps> = ({
   const signInRoute = '/';
   const dashboardRoute = '/dashboard';
 
-
-  const Layout = user ? DefaultLayout : AuthLayout;
+  const Layout = user?.role === "admin" ? DefaultLayout : (user?.role === "teacher" ? TeacherLayout : AuthLayout)
 
   return (
     <ReactDOMRoute

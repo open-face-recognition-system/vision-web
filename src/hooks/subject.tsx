@@ -49,8 +49,10 @@ interface PaginationAwareObject {
 
 interface SubjectContextData {
   listSubjects(pagination: Pagination): Promise<PaginationAwareObject>;
+  listTeacherSubjects(pagination: Pagination): Promise<PaginationAwareObject>;
   showSubject(id: number): Promise<Subject>;
   enrollStudent(id: number, studnetId: number): Promise<Student>;
+  enrollByPdfStudent(id: number, data: FormData): Promise<Student>;
   unenrollStudent(id: number, studnetId: number): Promise<void>;
   createSubject(subject: SubjectRequest): Promise<Subject>;
   training(id: number): Promise<void>;
@@ -66,6 +68,20 @@ const SubjectProvider: React.FC = ({ children }) => {
   const listSubjects = useCallback(async (pagination: Pagination) => {
     const { page, limit } = pagination;
     const response = await api.get<PaginationAwareObject>('/subjects', {
+      params: {
+        page,
+        limit,
+      },
+    });
+
+    const subjects = response.data;
+
+    return subjects;
+  }, []);
+
+  const listTeacherSubjects = useCallback(async (pagination: Pagination) => {
+    const { page, limit } = pagination;
+    const response = await api.get<PaginationAwareObject>('/subjects/teacher', {
       params: {
         page,
         limit,
@@ -119,6 +135,14 @@ const SubjectProvider: React.FC = ({ children }) => {
     return response.data;
   }, []);
 
+  const enrollByPdfStudent = useCallback(async (id: number, data: FormData) => {
+    const response = await api.post<Student>(
+      `/subjects/${id}/enroll/pdf`,
+      data,
+    );
+    return response.data;
+  }, []);
+
   const unenrollStudent = useCallback(async (id: number, studentId: number) => {
     const response = await api.post(`/subjects/${id}/unenroll`, {
       studentId,
@@ -138,12 +162,14 @@ const SubjectProvider: React.FC = ({ children }) => {
     <SubjectContext.Provider
       value={{
         listSubjects,
+        listTeacherSubjects,
         showSubject,
         createSubject,
         updateSubject,
         enrollStudent,
-        training,
+        enrollByPdfStudent,
         unenrollStudent,
+        training,
         deleteSubject,
       }}
     >

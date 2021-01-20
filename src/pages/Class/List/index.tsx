@@ -5,34 +5,44 @@ import MaterialTable from 'material-table';
 import { useSnack } from '../../../hooks/snackbar';
 import { ClassItem, useClassItem } from '../../../hooks/class';
 import ConfirmDialog from '../../../components/ConfirmDialog';
+import { useAuth } from '../../../hooks/auth';
 
 const List: React.FC = () => {
   const history = useHistory();
   const { openSnack } = useSnack();
-  const { listClasses, deleteClass } = useClassItem();
+  const { user } = useAuth();
+  const { listClasses, listTeacherClasses, deleteClass } = useClassItem();
 
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [limit, setLimit] = useState(5);
   const [page, setPage] = useState(0);
   const [currentId, setCurrentId] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [classes, setClasses] = React.useState<ClassItem[]>([]);
+  const [classes, setClasses] = useState<ClassItem[]>([]);
 
   useEffect(() => {
     async function getAllSubjects(): Promise<void> {
       setLoading(true);
-      const subjectsResponse = await listClasses({
-        page: page + 1,
-        limit,
-      });
+      let subjectsResponse;
+      if (user.role === 'admin') {
+        subjectsResponse = await listClasses({
+          page: page + 1,
+          limit,
+        });
+      } else {
+        subjectsResponse = await listTeacherClasses({
+          page: page + 1,
+          limit,
+        });
+      }
       setClasses(subjectsResponse.data);
       setTotal(subjectsResponse.total);
       setLoading(false);
     }
 
     getAllSubjects();
-  }, [listClasses, limit, page]);
+  }, [listClasses, listTeacherClasses, user, limit, page]);
 
   const handleDeleteClass = useCallback(async () => {
     if (currentId) {

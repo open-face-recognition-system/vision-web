@@ -53,6 +53,11 @@ const CreateSubject: React.FC = () => {
             actionTitle="Criar"
             clearAllFields
             handleForm={handleCreateSubject}
+            handleUploadPdf={() => {
+              return new Promise(resolve => {
+                resolve();
+              });
+            }}
             handleTraining={() => {
               return new Promise(resolve => {
                 resolve();

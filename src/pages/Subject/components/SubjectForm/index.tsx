@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-indent */
-import React, { useCallback, useState } from 'react';
-import { Grid } from '@material-ui/core';
-
+import React, { useCallback, useState, ChangeEvent } from 'react';
+import { Grid, Button as MaterialButton } from '@material-ui/core';
+import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { useHistory } from 'react-router-dom';
 import Paper from '../../../../components/Paper';
 import Title from '../../../../components/Title';
@@ -26,6 +26,7 @@ interface SubjectFormProps {
   clearAllFields?: boolean;
   handleForm: (params: CreateSubjectRequest) => Promise<void>;
   handleTraining: () => Promise<void>;
+  handleUploadPdf: (e: ChangeEvent<HTMLInputElement>) => Promise<void>;
 }
 
 
@@ -38,7 +39,8 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
   handleTrainingLoading,
   clearAllFields,
   handleForm,
-  handleTraining
+  handleTraining,
+  handleUploadPdf
 }: SubjectFormProps) => {
   const history = useHistory();
   const { listTeachers } = useTeacher();
@@ -74,16 +76,17 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
     [listTeachers],
   );
 
-
   return (
     <Paper>
       <Title title={title} />
+
       <Grid
         container
         direction="row"
         justify="space-between"
         alignItems="center"
       >
+
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
@@ -154,7 +157,6 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
                       }
                     }}
                   />
-
                 )}
               {isUpdate && (
                 <>
@@ -170,8 +172,29 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
                         }}
                       />
                     )}
+                  <label htmlFor="upload-pdf">
+                    <input
+                      style={{ display: "none" }}
+                      id="upload-pdf"
+                      name="upload-pdf"
+                      type="file"
+                      onChange={(e) => {
+                        handleUploadPdf(e)
+                      }}
+                    />
+                    <MaterialButton
+                      variant="contained"
+                      color="primary"
+                      component="span"
+                      startIcon={<CloudUploadIcon />}
+                    >
+                      Upload PDF
+                    </MaterialButton>
+                  </label>
                 </>
+
               )}
+
               <Button
                 variant="text"
                 text="Cancelar"

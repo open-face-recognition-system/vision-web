@@ -8,34 +8,44 @@ import { useHistory } from 'react-router-dom';
 import { Subject, useSubject } from '../../../hooks/subject';
 import { useSnack } from '../../../hooks/snackbar';
 import ConfirmDialog from '../../../components/ConfirmDialog';
+import { useAuth } from '../../../hooks/auth';
 
 const List: React.FC = () => {
   const history = useHistory();
   const { openSnack } = useSnack();
+  const { user } = useAuth();
+  const { listSubjects, listTeacherSubjects, deleteSubject } = useSubject();
 
-  const { listSubjects, deleteSubject } = useSubject();
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [currentId, setCurrentId] = useState<number | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [subjects, setSubjects] = React.useState<Subject[]>([]);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
 
   useEffect(() => {
     async function getAllSubjects(): Promise<void> {
       setLoading(true);
-      const subjectsResponse = await listSubjects({
-        page: page + 1,
-        limit,
-      });
+      let subjectsResponse;
+      if (user.role === "admin") {
+        subjectsResponse = await listSubjects({
+          page: page + 1,
+          limit,
+        });
+      } else {
+        subjectsResponse = await listTeacherSubjects({
+          page: page + 1,
+          limit,
+        });
+      }
       setSubjects(subjectsResponse.data);
       setTotal(subjectsResponse.total);
       setLoading(false);
     }
 
     getAllSubjects();
-  }, [listSubjects, limit, page]);
+  }, [listSubjects, listTeacherSubjects, user, limit, page]);
 
   const handleDeleteSubject = useCallback(async () => {
     if (currentId) {

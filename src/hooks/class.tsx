@@ -34,13 +34,15 @@ interface PaginationAwareObject {
 
 interface ClassItemContextData {
   listClasses(pagination: Pagination): Promise<PaginationAwareObject>;
+  listTeacherClasses(pagination: Pagination): Promise<PaginationAwareObject>;
+  showAttendance(id: number): Promise<Attendance[]>;
   showClass(id: number): Promise<ClassItem>;
   createClass(classRequest: CreateClassRequest): Promise<ClassItem>;
   updateClass(id: number, classRequest: CreateClassRequest): Promise<ClassItem>;
   updateAttendanceClass(
     id: number,
     createAttendance: CreateAttendanceRequest,
-  ): Promise<ClassItem>;
+  ): Promise<Attendance>;
   deleteClass(id: number): Promise<void>;
 }
 
@@ -52,6 +54,21 @@ const ClassItemProvider: React.FC = ({ children }) => {
   const listClasses = useCallback(async (pagination: Pagination) => {
     const { page, limit } = pagination;
     const response = await api.get<PaginationAwareObject>('/classes', {
+      params: {
+        page,
+        limit,
+        order: '+startHour',
+      },
+    });
+
+    const classes = response.data;
+
+    return classes;
+  }, []);
+
+  const listTeacherClasses = useCallback(async (pagination: Pagination) => {
+    const { page, limit } = pagination;
+    const response = await api.get<PaginationAwareObject>('/classes/teacher', {
       params: {
         page,
         limit,
@@ -108,12 +125,19 @@ const ClassItemProvider: React.FC = ({ children }) => {
     [],
   );
 
+  const showAttendance = useCallback(async (classId: number) => {
+    const response = await api.get<Attendance[]>(
+      `/attendances/class/${classId}`,
+    );
+    return response.data;
+  }, []);
+
   const updateAttendanceClass = useCallback(
     async (
       id: number,
       { isPresent, classId, studentId }: CreateAttendanceRequest,
     ) => {
-      const response = await api.put<ClassItem>(`/attendances/${id}`, {
+      const response = await api.put<Attendance>(`/attendances/${id}`, {
         isPresent,
         classId,
         studentId,
@@ -131,6 +155,8 @@ const ClassItemProvider: React.FC = ({ children }) => {
     <ClassItemContext.Provider
       value={{
         listClasses,
+        listTeacherClasses,
+        showAttendance,
         showClass,
         createClass,
         updateClass,

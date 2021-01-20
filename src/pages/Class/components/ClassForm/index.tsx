@@ -5,6 +5,7 @@ import { Grid, TextField } from '@material-ui/core';
 import { DatePicker, TimePicker } from '@material-ui/pickers';
 import { Autocomplete } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
+import { format, parseISO } from 'date-fns';
 import Paper from '../../../../components/Paper';
 import Title from '../../../../components/Title';
 import Button from '../../../../components/Button';
@@ -134,7 +135,14 @@ const ClassForm: React.FC<ClassFormProps> = ({
                 return false;
               }}
               getOptionLabel={option => {
-                return `${option.startDate} - ${option.endDate}`
+                if (option.startDate === undefined) {
+                  return ""
+                }
+                const startDate = parseISO(String(option.startDate));
+                const endDate = parseISO(String(option.endDate));
+                const formattedStartDate = format(startDate, 'dd/MM/yyyy');
+                const formattedEndDate = format(endDate, 'dd/MM/yyyy');
+                return `${formattedStartDate} - ${formattedEndDate}`
               }}
               renderInput={params => (
                 <TextField {...params} label="Semestre" variant="outlined" />

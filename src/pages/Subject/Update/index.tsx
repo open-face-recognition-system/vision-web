@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-indent */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, ChangeEvent } from 'react';
 
 import Grid from '@material-ui/core/Grid';
 
@@ -24,7 +24,7 @@ const UpdateSubject: React.FC = () => {
   const { id } = useParams<SubjectParams>();
 
   const { openSnack } = useSnack();
-  const { updateSubject, showSubject, training } = useSubject();
+  const { updateSubject, showSubject, training, enrollByPdfStudent } = useSubject();
 
   const [subject, setSubject] = useState<Subject>({} as Subject);
   const [detailsLoading, setDetailsLoading] = useState(false);
@@ -105,6 +105,30 @@ const UpdateSubject: React.FC = () => {
     [training, openSnack, id],
   );
 
+  const handleUploadPdf = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+        const data = new FormData();
+        data.append('file', e.target.files[0]);
+        try {
+          await enrollByPdfStudent(Number(id), data)
+          openSnack({
+            type: 'success',
+            title: 'Sucesso ao matricular alunos',
+            open: true,
+          });
+        } catch {
+          openSnack({
+            type: 'error',
+            title: 'Erro ao matricular alunos',
+            open: true,
+          });
+        }
+      }
+    },
+    [id, enrollByPdfStudent, openSnack],
+  );
+
   return (
     <Container>
       {detailsLoading ? (
@@ -117,6 +141,7 @@ const UpdateSubject: React.FC = () => {
                 actionTitle="Alterar"
                 isUpdate
                 defaultSubject={subject}
+                handleUploadPdf={handleUploadPdf}
                 handleForm={handleCreateSubject}
                 handleTraining={handleTraining}
                 handleTrainingLoading={trainingLoading}

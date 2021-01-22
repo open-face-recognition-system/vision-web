@@ -2,7 +2,6 @@ import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import { ListItemIcon, ListItemText, ListSubheader } from '@material-ui/core';
 import {
-  Dashboard,
   People,
   School,
   Assignment,
@@ -18,12 +17,6 @@ export const MainListItems: React.FC = () => {
 
   return (
     <div>
-      <ListItem button onClick={() => history.push('/dashboard')}>
-        <ListItemIcon>
-          <Dashboard />
-        </ListItemIcon>
-        <ListItemText primary="Dashboard" />
-      </ListItem>
       <ListItem button onClick={() => history.push('/semesters')}>
         <ListItemIcon>
           <CalendarToday />

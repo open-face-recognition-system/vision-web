@@ -24,7 +24,7 @@ const EnrolledStudentItem: React.FC<EnrolledStudentItemProps> = ({
     <ListItem
       button
       onClick={() => {
-        history.push(`/students/${student.id}/update`);
+        history.push(`/students/${student.id}/details`);
       }}
     >
       <ListItemText primary={student.user.name} />

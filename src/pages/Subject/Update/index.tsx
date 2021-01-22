@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-indent */
 import React, { useCallback, useEffect, useState, ChangeEvent } from 'react';
 
-import Grid from '@material-ui/core/Grid';
+import { Grid } from '@material-ui/core';
 
 import { useParams } from 'react-router-dom';
 

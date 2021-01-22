@@ -151,7 +151,7 @@ const SubjectProvider: React.FC = ({ children }) => {
   }, []);
 
   const training = useCallback(async (id: number) => {
-    await api.post<Student>(`/training/${id}`);
+    await api.post<Student>(`/recognition/training/${id}`);
   }, []);
 
   const deleteSubject = useCallback(async (id: number) => {

@@ -53,6 +53,23 @@ const List: React.FC = () => {
     }
   }, [id, showAttendance, openSnack]);
 
+  const refreshData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const attendanceResponse = await showAttendance(Number(id));
+      setAttendanceList(attendanceResponse);
+    } catch {
+      setAttendanceList([]);
+      openSnack({
+        type: 'error',
+        title: 'Erro ao buscar aula',
+        open: true,
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [id, showAttendance, openSnack])
+
   const handleUpdateAttendance = useCallback(async () => {
     if (currentAttendance) {
       try {
@@ -121,6 +138,12 @@ const List: React.FC = () => {
           },
         }}
         actions={[
+          {
+            icon: 'refresh',
+            tooltip: 'Atualizar',
+            isFreeAction: true,
+            onClick: () => refreshData(),
+          },
           {
             icon: 'edit',
             tooltip: 'Editar presença',

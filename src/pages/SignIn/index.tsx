@@ -6,8 +6,9 @@ import {
   CssBaseline,
   TextField as MaterialTextField,
   Typography,
-  Container,
+  Grid,
   CircularProgress,
+  Paper
 } from '@material-ui/core';
 
 import { useHistory } from 'react-router-dom';
@@ -55,39 +56,41 @@ const SignIn: React.FC = () => {
   );
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Grid container component="main" className={classes.root}>
       <CssBaseline />
-      <div className={classes.paper}>
-        <Typography component="h1" variant="h5">
-          Faça seu login
-        </Typography>
-        <form className={classes.form} noValidate>
-          <TextField
-            label="E-mail"
-            name="email"
-            value={email}
-            disabled={false}
-            setValue={setEmail}
-          />
-          <MaterialTextField
-            variant="outlined"
-            margin="normal"
-            fullWidth
-            name="password"
-            label="Senha"
-            type="password"
-            id="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            autoComplete="current-password"
-          />
+      <Grid item xs={false} sm={4} md={7} className={classes.image} />
+      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <div className={classes.paper}>
+          <Typography component="h1" variant="h5">
+            Faça seu login
+          </Typography>
+          <form className={classes.form} noValidate>
+            <TextField
+              label="E-mail"
+              name="email"
+              value={email}
+              disabled={false}
+              setValue={setEmail}
+            />
+            <MaterialTextField
+              variant="outlined"
+              margin="normal"
+              fullWidth
+              name="password"
+              label="Senha"
+              type="password"
+              id="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              autoComplete="current-password"
+            />
+          </form>
           {loading ? (
             <Button
               fullWidth
               variant="contained"
               color="primary"
               onClick={handleSubmit}
-              className={classes.button}
               disabled={loading}
             >
               <CircularProgress size={14} />
@@ -99,14 +102,13 @@ const SignIn: React.FC = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleSubmit}
-                className={classes.button}
               >
                 Entrar
               </Button>
             )}
-        </form>
-      </div>
-    </Container>
+        </div>
+      </Grid>
+    </Grid>
   );
 };
 

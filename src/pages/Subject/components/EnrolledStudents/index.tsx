@@ -131,7 +131,7 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
       <Grid
         container
         direction="row"
-        justify="space-between"
+        justify="space-around"
         alignItems="center"
       >
         <Grid item xs={12} sm={10}>

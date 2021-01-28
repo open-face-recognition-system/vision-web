@@ -40,7 +40,7 @@ const SignIn: React.FC = () => {
         });
         setLoading(false)
 
-        history.push('/dashboard');
+        history.push('/classes');
       } catch (err) {
         setEmail('');
         setPassword('');

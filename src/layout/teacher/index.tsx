@@ -91,7 +91,7 @@ const DefaultLayout: React.FC = ({ children }) => {
             noWrap
             className={classes.title}
           >
-            OFRS - UDESC
+            VISION
           </Typography>
           <div>
             <IconButton

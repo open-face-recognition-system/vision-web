@@ -4,7 +4,6 @@ import { Switch } from 'react-router-dom';
 import Route from './Route';
 
 import SignIn from '../pages/SignIn';
-import Dashboard from '../pages/Dashboard';
 import ListStudent from '../pages/Student/List';
 import CreateStudent from '../pages/Student/Create';
 import UpdateStudent from '../pages/Student/Update';
@@ -26,7 +25,6 @@ import listAttendances from '../pages/Attendance/List';
 const Routes: React.FC = () => (
   <Switch>
     <Route path="/" exact component={SignIn} />
-    <Route path="/dashboard" component={Dashboard} isPrivate />
 
     <Route path="/semesters" exact component={ListSemesters} isPrivate />
     <Route

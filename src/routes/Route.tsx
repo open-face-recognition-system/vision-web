@@ -25,7 +25,7 @@ const Route: React.FC<RouteProps> = ({
 }) => {
   const { user } = useAuth();
   const signInRoute = '/';
-  const dashboardRoute = '/dashboard';
+  const dashboardRoute = '/classes';
 
   const Layout = user?.role === "admin" ? DefaultLayout : (user?.role === "teacher" ? TeacherLayout : AuthLayout)
 

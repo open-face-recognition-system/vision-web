@@ -132,6 +132,14 @@ const List: React.FC = () => {
           const classItem = rowData as ClassItem;
           history.push(`/classes/${classItem.id}/attendances`);
         }}
+        localization={{
+          toolbar: {
+            searchPlaceholder: 'Pesquisar',
+          },
+          header: {
+            actions: 'Ações',
+          },
+        }}
         options={{
           actionsColumnIndex: -1,
           pageSize: 10,

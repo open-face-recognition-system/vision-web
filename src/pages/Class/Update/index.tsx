@@ -43,12 +43,12 @@ const UpdateClass: React.FC = () => {
         const semestersList = await listSemesters({
           page: 1,
           limit: 50,
-        })
+        });
         setSemesters(semestersList.data);
         const subjectsList = await listSubjects({
           page: 1,
           limit: 50,
-        })
+        });
         setSubjects(subjectsList.data);
         setClassItem(classExists);
       } catch {
@@ -67,26 +67,33 @@ const UpdateClass: React.FC = () => {
     }
   }, [id, showClass, openSnack, listSemesters, listSubjects]);
 
-
-  const handleCreateClass = useCallback(
-    async ({ startHour,
+  const handleUpdateClass = useCallback(
+    async ({
+      startHour,
       endHour,
       date,
       subjectId,
-      semesterId, }: CreateClassRequest) => {
+      semesterId,
+    }: CreateClassRequest) => {
       setLoading(true);
+
       try {
         if (startHour && endHour && date) {
-          startHour.setDate(date.getDate());
-          endHour.setDate(date.getDate());
+          const dateStartHour = new Date(startHour);
+          const dateEndHour = new Date(endHour);
+          const auxDate = new Date(date);
+          dateStartHour.setDate(auxDate.getDate());
+          dateEndHour.setDate(auxDate.getDate());
+
+          await updateClass(Number(id), {
+            startHour,
+            endHour,
+            date,
+            subjectId,
+            semesterId,
+          });
         }
-        await updateClass(Number(id), {
-          startHour,
-          endHour,
-          date,
-          subjectId,
-          semesterId,
-        });
+
         openSnack({
           type: 'success',
           title: 'Sucesso ao alterar aula',
@@ -119,7 +126,7 @@ const UpdateClass: React.FC = () => {
                 semesters={semesters}
                 subjects={subjects}
                 defaultClass={classItem}
-                handleForm={handleCreateClass}
+                handleForm={handleUpdateClass}
                 handleFormLoading={loading}
               />
             </Grid>

@@ -1,9 +1,8 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-indent */
-import React, { useState } from 'react';
-import { Grid, TextField } from '@material-ui/core';
+import React, { useState, useCallback } from 'react';
+import { Grid, TextField, MenuItem } from '@material-ui/core';
 import { DatePicker, TimePicker } from '@material-ui/pickers';
-import { Autocomplete } from '@material-ui/lab';
 import { useHistory } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import Paper from '../../../../components/Paper';
@@ -42,12 +41,16 @@ const ClassForm: React.FC<ClassFormProps> = ({
   const [startHour, setStartHour] = useState(defaultClass?.startHour || null);
   const [endHour, setEndHour] = useState(defaultClass?.endHour || null);
   const [date, setDate] = useState(defaultClass?.date || null);
-  const [subject, setSubject] = useState<Subject>(
-    defaultClass?.subject || {} as Subject,
-  );
-  const [semester, setSemester] = useState<Semester>(
-    defaultClass?.semester || {} as Semester,
-  );
+  const [subjectId, setSubjectId] = useState<number | null>(defaultClass?.subject?.id || null);
+  const [semesterId, setSemesterId] = useState<number | null>(defaultClass?.semester?.id || null);
+
+  const getFormatedDate = useCallback((semester: Semester) => {
+    const startDate = parseISO(String(semester.startDate));
+    const endDate = parseISO(String(semester.endDate));
+    const formattedStartDate = format(startDate, 'dd/MM/yyyy');
+    const formattedEndDate = format(endDate, 'dd/MM/yyyy');
+    return `${formattedStartDate} - ${formattedEndDate}`
+  }, [])
 
   return (
     <Paper>
@@ -99,55 +102,42 @@ const ClassForm: React.FC<ClassFormProps> = ({
             />
           </Grid>
           <Grid item xs={12}>
-            <Autocomplete
-              options={subjects}
+            <TextField
+              variant="outlined"
+              name="subject"
+              label="Matéria"
               fullWidth
-              defaultValue={subject}
-              getOptionLabel={option => option?.name}
-              getOptionSelected={(option, value) => {
-                const selelectedSubject = option.id === value.id;
-                if (selelectedSubject) {
-                  setSubject(value);
-                  return selelectedSubject;
-                }
-                return false;
+              value={subjectId}
+              select
+              onChange={event => {
+                setSubjectId(Number(event.target.value))
               }}
-              renderInput={params => (
-                <TextField
-                  {...params}
-                  label="Matéria"
-                  variant="outlined"
-                />
-              )}
-            />
+            >
+              {subjects.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid item xs={12}>
-            <Autocomplete
-              options={semesters}
+            <TextField
+              variant="outlined"
+              name="semester"
+              label="Semestre"
               fullWidth
-              defaultValue={semester}
-              getOptionSelected={(option, value) => {
-                const selelectedSemester = option.id === value.id;
-                if (selelectedSemester) {
-                  setSemester(value);
-                  return selelectedSemester;
-                }
-                return false;
+              value={semesterId}
+              select
+              onChange={event => {
+                setSemesterId(Number(event.target.value))
               }}
-              getOptionLabel={option => {
-                if (option.startDate === undefined) {
-                  return ""
-                }
-                const startDate = parseISO(String(option.startDate));
-                const endDate = parseISO(String(option.endDate));
-                const formattedStartDate = format(startDate, 'dd/MM/yyyy');
-                const formattedEndDate = format(endDate, 'dd/MM/yyyy');
-                return `${formattedStartDate} - ${formattedEndDate}`
-              }}
-              renderInput={params => (
-                <TextField {...params} label="Semestre" variant="outlined" />
-              )}
-            />
+            >
+              {semesters.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {getFormatedDate(option)}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
           <Grid item xs={12}>
             <Grid
@@ -168,15 +158,15 @@ const ClassForm: React.FC<ClassFormProps> = ({
                         startHour,
                         endHour,
                         date,
-                        subjectId: subject?.id,
-                        semesterId: semester?.id,
+                        subjectId,
+                        semesterId
                       });
                       if (clearAllFields) {
                         setStartHour(null);
                         setEndHour(null);
                         setDate(null);
-                        setSubject({} as Subject);
-                        setSemester({} as Semester);
+                        setSubjectId(null);
+                        setSemesterId(null);
                       }
                     }}
                   />

@@ -65,7 +65,7 @@ const Details: React.FC = () => {
         <GlobalLoading open={detailsLoading} />
       ) : (
           <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <Paper>
                 <Title title="Detalhes" />
                 <Typography variant="subtitle2" gutterBottom>
@@ -103,7 +103,7 @@ const Details: React.FC = () => {
                 </Grid>
               </Paper>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <Paper>
                 <Title title="Fotos" />
                 <List dense>

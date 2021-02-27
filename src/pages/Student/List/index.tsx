@@ -113,6 +113,14 @@ const List: React.FC = () => {
           setLimit(newLimit);
           setPage(0);
         }}
+        localization={{
+          toolbar: {
+            searchPlaceholder: 'Pesquisar',
+          },
+          header: {
+            actions: 'Ações',
+          },
+        }}
         options={{
           actionsColumnIndex: -1,
           pageSize: 10,

@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/jsx-indent */
-import React, { useCallback, useState, ChangeEvent } from 'react';
-import { Grid, Button as MaterialButton } from '@material-ui/core';
+import React, { useEffect, useState, ChangeEvent } from 'react';
+import { Grid, Button as MaterialButton, MenuItem, TextField as MaterialTextField } from '@material-ui/core';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import { useHistory } from 'react-router-dom';
 import Paper from '../../../../components/Paper';
@@ -9,7 +9,6 @@ import Title from '../../../../components/Title';
 import TextField from '../../../../components/TextField';
 import Button from '../../../../components/Button';
 import LoadingButton from '../../../../components/LoadingButton';
-import AutocompleteTextField from '../../../../components/AutocompleteTextField';
 
 import { Teacher, useTeacher } from '../../../../hooks/teacher';
 import CreateSubjectRequest from '../../../../dtos/CreateSubjectRequest'
@@ -45,48 +44,35 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
   const history = useHistory();
   const { listTeachers } = useTeacher();
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const [name, setName] = useState(defaultSubject?.name || "");
   const [course, setCourse] = useState(defaultSubject?.course || "");
   const [description, setDescription] = useState(defaultSubject?.description || "");
-  const [teacher, setTeacher] = useState<Teacher>(defaultSubject?.teacher || {} as Teacher);
+  const [teacherId, setTeacherId] = useState<number | null>(defaultSubject?.teacher?.id || null);
 
   const [teachers, setTeachers] = useState<Teacher[]>([]);
 
-  const handleChangeTeacher = useCallback(
-    async (teacherName) => {
-      if (teacherName) {
-        const query = {
-          name: teacherName,
-        };
-        setLoading(true);
-        const teachersResponse = await listTeachers(
-          {
-            page: 1,
-            limit: 100,
-          },
-          query,
-        );
-        setLoading(false);
-        setTeachers(teachersResponse.data);
-      }
-    },
-    [listTeachers],
-  );
+  useEffect(() => {
+    async function getAllTeachers(): Promise<void> {
+      const subjectsResponse = await listTeachers({
+        page: 1,
+        limit: 100,
+      });
+      setTeachers(subjectsResponse.data);
+    }
+
+    getAllTeachers();
+  }, [listTeachers]);
+
 
   return (
     <Paper>
       <Title title={title} />
-
       <Grid
         container
         direction="row"
         justify="space-between"
         alignItems="center"
       >
-
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <TextField
@@ -107,17 +93,23 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
             />
           </Grid>
           <Grid item xs={12}>
-            <AutocompleteTextField
-              open={open}
+            <MaterialTextField
+              variant="outlined"
               name="teacher"
               label="Professor"
-              loading={loading}
-              defaultEntity={teacher}
-              entities={teachers}
-              setValue={handleChangeTeacher}
-              setEntity={setTeacher}
-              setOpen={setOpen}
-            />
+              fullWidth
+              value={teacherId}
+              select
+              onChange={event => {
+                setTeacherId(Number(event.target.value))
+              }}
+            >
+              {teachers.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.user.name}
+                </MenuItem>
+              ))}
+            </MaterialTextField>
           </Grid>
           <Grid item xs={12}>
             <TextField
@@ -147,13 +139,13 @@ const SubjectForm: React.FC<SubjectFormProps> = ({
                         name,
                         course,
                         description,
-                        teacherId: teacher?.id,
+                        teacherId
                       });
                       if (clearAllFields) {
                         setName("")
                         setCourse("")
                         setDescription("")
-                        setTeacher({} as Teacher)
+                        setTeacherId(null)
                       }
                     }}
                   />

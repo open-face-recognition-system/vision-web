@@ -34,7 +34,7 @@ export interface SubjectRequest {
   name: string;
   course: string;
   description: string;
-  teacherId: number;
+  teacherId: number | null;
 }
 
 interface Pagination {
@@ -51,7 +51,7 @@ interface SubjectContextData {
   listSubjects(pagination: Pagination): Promise<PaginationAwareObject>;
   listTeacherSubjects(pagination: Pagination): Promise<PaginationAwareObject>;
   showSubject(id: number): Promise<Subject>;
-  enrollStudent(id: number, studnetId: number): Promise<Student>;
+  enrollStudent(id: number, student: number | string): Promise<Student>;
   enrollByPdfStudent(id: number, data: FormData): Promise<Student>;
   unenrollStudent(id: number, studnetId: number): Promise<void>;
   createSubject(subject: SubjectRequest): Promise<Subject>;

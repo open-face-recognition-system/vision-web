@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, MenuItem, TextField } from '@material-ui/core';
 
 import { PaperContainer, ListContainer } from './styles';
 
 import Title from '../../../../components/Title';
 import Button from '../../../../components/Button';
-import AutocompleteTextField from '../../../../components/AutocompleteTextField';
 import { Student, useStudent } from '../../../../hooks/student';
 import { StudentSubject, useSubject } from '../../../../hooks/subject';
 import { useSnack } from '../../../../hooks/snackbar';
@@ -25,28 +24,33 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
   const { openSnack } = useSnack();
   const { enrollStudent, unenrollStudent } = useSubject();
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [students, setStudents] = useState<Student[]>([]);
-  const [student, setStudent] = useState<Student>({} as Student);
+  const [studentId, setStudentId] = useState<number | string>('');
   const [currentEnrolledStudents, setCurrentEnrolledStudents] = useState<
     StudentSubject[]
   >(enrolledStudents || []);
 
   useEffect(() => {
-    if (!open) {
-      setStudents([]);
+    async function getAllStudents(): Promise<void> {
+      const studentsResponse = await listStudents({
+        page: 1,
+        limit: 100,
+      });
+      setStudents(studentsResponse.data);
     }
-  }, [open]);
+
+    getAllStudents();
+  }, [listStudents]);
 
   const handleAddStudent = useCallback(async () => {
     try {
-      const enrolledStudent = await enrollStudent(subjectId, student.id);
+      const enrolledStudent = await enrollStudent(subjectId, studentId);
       openSnack({
         type: 'success',
         title: 'Sucesso ao matricular aluno',
         open: true,
       });
+
       setCurrentEnrolledStudents([
         ...currentEnrolledStudents,
         {
@@ -62,10 +66,12 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
         title: 'Erro ao matricular aluno',
         open: true,
       });
+    } finally {
+      setStudentId('');
     }
   }, [
     subjectId,
-    student.id,
+    studentId,
     enrollStudent,
     openSnack,
     setCurrentEnrolledStudents,
@@ -73,9 +79,9 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
   ]);
 
   const handleRemoveStudent = useCallback(
-    async (studentId: number) => {
+    async (idToRemove: number) => {
       try {
-        await unenrollStudent(subjectId, studentId);
+        await unenrollStudent(subjectId, idToRemove);
         openSnack({
           type: 'success',
           title: 'Sucesso ao dematricular aluno',
@@ -84,7 +90,7 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
         setCurrentEnrolledStudents(
           currentEnrolledStudents.filter(
             currentEnrolledStudent =>
-              currentEnrolledStudent.student.id !== studentId,
+              currentEnrolledStudent.student.id !== idToRemove,
           ),
         );
       } catch (err) {
@@ -93,36 +99,17 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
           title: 'Erro ao dematricular aluno',
           open: true,
         });
+      } finally {
+        setStudentId('');
       }
     },
     [
-      subjectId,
       unenrollStudent,
+      subjectId,
       openSnack,
       setCurrentEnrolledStudents,
       currentEnrolledStudents,
     ],
-  );
-
-  const handleChangeStudent = useCallback(
-    async studentName => {
-      if (studentName) {
-        const query = {
-          name: studentName,
-        };
-        setLoading(true);
-        const studentsResponse = await listStudents(
-          {
-            page: 1,
-            limit: 100,
-          },
-          query,
-        );
-        setLoading(false);
-        setStudents(studentsResponse.data);
-      }
-    },
-    [listStudents],
   );
 
   return (
@@ -135,17 +122,23 @@ const EnrolledStudents: React.FC<EnrolledStudentsProps> = ({
         alignItems="center"
       >
         <Grid item xs={12} sm={10}>
-          <AutocompleteTextField
-            open={open}
+          <TextField
+            variant="outlined"
             name="student"
             label="Aluno"
-            loading={loading}
-            defaultEntity={student}
-            entities={students}
-            setValue={handleChangeStudent}
-            setEntity={setStudent}
-            setOpen={setOpen}
-          />
+            fullWidth
+            value={studentId}
+            select
+            onChange={event => {
+              setStudentId(Number(event.target.value));
+            }}
+          >
+            {students.map(option => (
+              <MenuItem key={option.id} value={option.id}>
+                {option.user.name}
+              </MenuItem>
+            ))}
+          </TextField>
         </Grid>
         <Button text="+" color="primary" onClick={handleAddStudent} />
       </Grid>
